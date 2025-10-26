@@ -1,107 +1,317 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explain This Page</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <div class="popup-container">
-    <!-- Header -->
-    <div class="popup-header">
-      <div class="popup-icon">🧠</div>
-      <div>
-        <h1 class="popup-title">Explain This Page</h1>
-        <p class="popup-subtitle">AI-Powered Simplification</p>
-      </div>
-    </div>
+/* Popup Styles v4.0 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    <!-- Quick Actions -->
-    <div class="popup-actions">
-      <button id="explainBtn" class="btn btn-primary">
-        <span class="btn-icon">✨</span>
-        Simplify This Page
-      </button>
-    </div>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  width: 380px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
 
-    <!-- Settings -->
-    <div class="popup-section">
-      <h3 class="section-title">Reading Level</h3>
-      <div class="radio-group" id="readingLevel">
-        <label class="radio-option">
-          <input type="radio" name="level" value="elementary">
-          <div class="radio-content">
-            <span class="radio-icon">🌟</span>
-            <div>
-              <div class="radio-label">Elementary</div>
-              <div class="radio-description">Ages 6-10</div>
-            </div>
-          </div>
-        </label>
-        
-        <label class="radio-option">
-          <input type="radio" name="level" value="middle">
-          <div class="radio-content">
-            <span class="radio-icon">📚</span>
-            <div>
-              <div class="radio-label">Middle School</div>
-              <div class="radio-description">Ages 11-13</div>
-            </div>
-          </div>
-        </label>
-        
-        <label class="radio-option">
-          <input type="radio" name="level" value="high">
-          <div class="radio-content">
-            <span class="radio-icon">🎓</span>
-            <div>
-              <div class="radio-label">High School</div>
-              <div class="radio-description">Ages 14+</div>
-            </div>
-          </div>
-        </label>
-      </div>
-    </div>
+.popup-container {
+  background: white;
+  min-height: 100vh;
+}
 
-    <!-- Toggle Settings -->
-    <div class="popup-section">
-      <h3 class="section-title">Options</h3>
-      <label class="toggle-option">
-        <div class="toggle-info">
-          <div class="toggle-label">Auto-detect complexity</div>
-          <div class="toggle-description">Automatically show banner on complex pages</div>
-        </div>
-        <div class="toggle-switch">
-          <input type="checkbox" id="autoDetect">
-          <span class="toggle-slider"></span>
-        </div>
-      </label>
-    </div>
+/* Header */
+.popup-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
 
-    <!-- Stats -->
-    <div class="popup-section">
-      <h3 class="section-title">Your Stats</h3>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📄</div>
-          <div class="stat-value" id="pagesCount">0</div>
-          <div class="stat-label">Pages Simplified</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💡</div>
-          <div class="stat-value" id="wordsCount">0</div>
-          <div class="stat-label">Words Simplified</div>
-        </div>
-      </div>
-    </div>
+.popup-icon {
+  font-size: 48px;
+  animation: float 3s ease-in-out infinite;
+}
 
-    <!-- Footer -->
-    <div class="popup-footer">
-      <p>Version 4.0.0 | Made with ❤️</p>
-    </div>
-  </div>
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 
-  <script src="popup.js"></script>
-</body>
-</html>
+.popup-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.popup-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* Actions */
+.popup-actions {
+  padding: 20px;
+  background: white;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 18px;
+}
+
+/* Sections */
+.popup-section {
+  padding: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radio-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.radio-option:hover .radio-content {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.radio-option input[type="radio"]:checked + .radio-content {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.radio-icon {
+  font-size: 24px;
+}
+
+.radio-label {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+
+.radio-description {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Toggle */
+.toggle-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-option:hover {
+  background: #f1f5f9;
+}
+
+.toggle-info {
+  flex: 1;
+}
+
+.toggle-label {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.toggle-description {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+}
+
+.toggle-switch input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #cbd5e1;
+  border-radius: 13px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="checkbox"]:checked + .toggle-slider {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+input[type="checkbox"]:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.stat-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Footer */
+.popup-footer {
+  padding: 16px 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-section {
+  animation: slideIn 0.4s ease;
+}
+
+.popup-section:nth-child(2) { animation-delay: 0.1s; }
+.popup-section:nth-child(3) { animation-delay: 0.2s; }
+.popup-section:nth-child(4) { animation-delay: 0.3s; }
