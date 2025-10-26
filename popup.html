@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explain This Page</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="popup-icon">🧠</div>
+      <div>
+        <h1 class="popup-title">Explain This Page</h1>
+        <p class="popup-subtitle">AI-Powered Simplification</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="popup-actions">
+      <button id="explainBtn" class="btn btn-primary">
+        <span class="btn-icon">✨</span>
+        Simplify This Page
+      </button>
+    </div>
+
+    <!-- Settings -->
+    <div class="popup-section">
+      <h3 class="section-title">Reading Level</h3>
+      <div class="radio-group" id="readingLevel">
+        <label class="radio-option">
+          <input type="radio" name="level" value="elementary">
+          <div class="radio-content">
+            <span class="radio-icon">🌟</span>
+            <div>
+              <div class="radio-label">Elementary</div>
+              <div class="radio-description">Ages 6-10</div>
+            </div>
+          </div>
+        </label>
+        
+        <label class="radio-option">
+          <input type="radio" name="level" value="middle">
+          <div class="radio-content">
+            <span class="radio-icon">📚</span>
+            <div>
+              <div class="radio-label">Middle School</div>
+              <div class="radio-description">Ages 11-13</div>
+            </div>
+          </div>
+        </label>
+        
+        <label class="radio-option">
+          <input type="radio" name="level" value="high">
+          <div class="radio-content">
+            <span class="radio-icon">🎓</span>
+            <div>
+              <div class="radio-label">High School</div>
+              <div class="radio-description">Ages 14+</div>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Toggle Settings -->
+    <div class="popup-section">
+      <h3 class="section-title">Options</h3>
+      <label class="toggle-option">
+        <div class="toggle-info">
+          <div class="toggle-label">Auto-detect complexity</div>
+          <div class="toggle-description">Automatically show banner on complex pages</div>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox" id="autoDetect">
+          <span class="toggle-slider"></span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Stats -->
+    <div class="popup-section">
+      <h3 class="section-title">Your Stats</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📄</div>
+          <div class="stat-value" id="pagesCount">0</div>
+          <div class="stat-label">Pages Simplified</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💡</div>
+          <div class="stat-value" id="wordsCount">0</div>
+          <div class="stat-label">Words Simplified</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <p>Version 4.0.0 | Made with ❤️</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
