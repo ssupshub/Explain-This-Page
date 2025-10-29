@@ -1,697 +1,516 @@
-// Content Script v4.0 - Enhanced AI Simplification
+// Content Script v5.0 - New Tab Approach (No Pop-ups!)
 (function() {
   'use strict';
 
-  if (window.__explainPageV4) return;
-  window.__explainPageV4 = true;
+  if (window.__explainPageV5) return;
+  window.__explainPageV5 = true;
 
   // ===== CONFIGURATION =====
   const CONFIG = {
-    version: '4.0.0',
-    minTextLength: 200,
-    complexity: {
-      longWordChars: 10,
-      longWordRatio: 0.12,
-      longSentenceWords: 20,
-      longSentenceRatio: 0.25,
-      jargonMinCount: 2
-    },
-    summaryLength: {
-      elementary: 3,
-      middle: 4,
-      high: 5
-    },
-    maxSentenceWords: {
-      elementary: 12,
-      middle: 18,
-      high: 25
-    }
+    version: '5.0.0',
+    minTextLength: 100,
+    maxContentLength: 50000
   };
 
-  // ===== ENHANCED DICTIONARIES =====
-  
-  // Comprehensive jargon dictionary with simple explanations
+  // ===== DICTIONARIES =====
+  const WORD_SIMPLIFY = {
+    'utilize': 'use', 'utilization': 'use', 'implement': 'do', 'facilitate': 'help',
+    'demonstrate': 'show', 'indicate': 'show', 'establish': 'set up', 'maintain': 'keep',
+    'construct': 'build', 'obtain': 'get', 'acquire': 'get', 'purchase': 'buy',
+    'provide': 'give', 'assist': 'help', 'require': 'need', 'commence': 'start',
+    'terminate': 'end', 'eliminate': 'remove', 'generate': 'create', 'produce': 'make',
+    'however': 'but', 'therefore': 'so', 'consequently': 'so', 'furthermore': 'also',
+    'moreover': 'also', 'nevertheless': 'but', 'subsequently': 'then',
+    'approximately': 'about', 'predominantly': 'mostly', 'typically': 'usually',
+    'substantial': 'large', 'significant': 'important', 'considerable': 'large',
+    'numerous': 'many', 'sufficient': 'enough', 'inadequate': 'not enough',
+    'comprehend': 'understand', 'perceive': 'see', 'anticipate': 'expect',
+    'collaborate': 'work together', 'communicate': 'talk', 'participate': 'join',
+    'investigate': 'look into', 'analyze': 'study', 'examine': 'check',
+    'modify': 'change', 'enhance': 'improve', 'diminish': 'reduce'
+  };
+
   const JARGON_DICT = {
-    // Technology
     'algorithm': 'a set of steps to solve a problem',
     'API': 'a way for programs to talk to each other',
     'bandwidth': 'how much data can flow through internet',
-    'browser': 'a program to view websites like Chrome or Firefox',
     'cache': 'stored data to make things load faster',
-    'cloud': 'storing data on internet servers instead of your computer',
+    'cloud': 'storing data on internet servers',
     'database': 'an organized collection of information',
     'encryption': 'scrambling data to keep it secure',
-    'firewall': 'security system that blocks dangerous internet traffic',
-    'HTML': 'the code that creates web pages',
-    'JavaScript': 'a programming language that makes websites interactive',
-    'malware': 'harmful software that can damage your computer',
-    'server': 'a powerful computer that stores websites',
-    'software': 'programs and apps that run on computers',
-    'URL': 'the web address you type in the browser',
-    'virus': 'harmful program that spreads between computers',
-    'WiFi': 'wireless internet connection',
-    
-    // Science & Research
     'hypothesis': 'an educated guess that can be tested',
-    'theory': 'an explanation backed by evidence',
-    'experiment': 'a test to see if something is true',
-    'data': 'facts and numbers collected for analysis',
-    'variable': 'something that can change in an experiment',
-    'correlation': 'when two things tend to happen together',
     'methodology': 'the way research is done',
-    'analysis': 'careful study to understand something',
-    'empirical': 'based on observation and testing',
-    'peer review': 'when experts check each others work',
-    
-    // Business & Finance
     'revenue': 'money earned from selling things',
-    'profit': 'money left after paying all costs',
-    'investment': 'spending money to earn more later',
     'stakeholder': 'anyone affected by a business decision',
-    'marketing': 'promoting products to customers',
-    'strategy': 'a plan to achieve a goal',
-    'budget': 'a plan for spending money',
-    'forecast': 'predicting what will happen',
-    'asset': 'something valuable that you own',
-    'liability': 'money that you owe to others',
-    
-    // Medical & Health
     'diagnosis': 'identifying what illness someone has',
-    'symptom': 'a sign that something is wrong with health',
-    'treatment': 'medical care to help cure illness',
     'chronic': 'a long-lasting health condition',
-    'acute': 'sudden and severe illness',
-    'therapy': 'treatment to improve health',
-    'immunity': 'body protection against disease',
-    'vaccine': 'medicine to prevent disease',
-    'prescription': 'doctors order for medicine',
-    'metabolism': 'how body turns food into energy',
-    
-    // General Academic
-    'concept': 'an idea or principle',
     'paradigm': 'a way of thinking about something',
-    'framework': 'a structure to organize ideas',
-    'context': 'the situation surrounding something',
-    'criteria': 'standards used to judge something',
-    'objective': 'a goal or target',
-    'subjective': 'based on personal opinion',
-    'quantitative': 'measured with numbers',
-    'qualitative': 'described with words not numbers',
     'synthesis': 'combining parts to make a whole'
   };
 
-  // Extensive word simplifications
-  const WORD_SIMPLIFY = {
-    // Common complex words
-    'utilize': 'use',
-    'utilization': 'use',
-    'implement': 'do',
-    'implementation': 'doing',
-    'facilitate': 'help',
-    'demonstrate': 'show',
-    'indicate': 'show',
-    'establish': 'set up',
-    'maintain': 'keep',
-    'construct': 'build',
-    'obtain': 'get',
-    'acquire': 'get',
-    'purchase': 'buy',
-    'provide': 'give',
-    'assist': 'help',
-    'require': 'need',
-    'commence': 'start',
-    'terminate': 'end',
-    'eliminate': 'remove',
-    'generate': 'create',
-    'produce': 'make',
-    'develop': 'create',
-    'create': 'make',
-    
-    // Transition words
-    'however': 'but',
-    'therefore': 'so',
-    'consequently': 'so',
-    'furthermore': 'also',
-    'moreover': 'also',
-    'nevertheless': 'but',
-    'subsequently': 'then',
-    'approximately': 'about',
-    'predominantly': 'mostly',
-    'typically': 'usually',
-    
-    // Adjectives
-    'substantial': 'large',
-    'significant': 'important',
-    'considerable': 'large',
-    'numerous': 'many',
-    'sufficient': 'enough',
-    'inadequate': 'not enough',
-    'exceptional': 'outstanding',
-    'optimal': 'best',
-    'minimal': 'very small',
-    'maximum': 'most',
-    'minimum': 'least',
-    
-    // Verbs
-    'comprehend': 'understand',
-    'perceive': 'see',
-    'anticipate': 'expect',
-    'collaborate': 'work together',
-    'communicate': 'talk',
-    'participate': 'join',
-    'investigate': 'look into',
-    'analyze': 'study',
-    'examine': 'check',
-    'modify': 'change',
-    'enhance': 'improve',
-    'diminish': 'reduce',
-    'expand': 'grow',
-    'restrict': 'limit',
-    
-    // Nouns
-    'methodology': 'method',
-    'infrastructure': 'basic system',
-    'paradigm': 'model',
-    'component': 'part',
-    'mechanism': 'way',
-    'procedure': 'process',
-    'objective': 'goal',
-    'capability': 'ability',
-    'phenomenon': 'event',
-    'characteristic': 'trait',
-    
-    // Phrases (handle as single words)
-    'in order to': 'to',
-    'for the purpose of': 'to',
-    'with regard to': 'about',
-    'in relation to': 'about',
-    'as a result of': 'because of',
-    'due to the fact that': 'because',
-    'at this point in time': 'now',
-    'in the event that': 'if'
-  };
-
-  // Stop words for summarization
-  const STOP_WORDS = new Set([
-    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
-    'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
-    'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she',
-    'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what',
-    'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me'
-  ]);
-
   // ===== CORE FUNCTIONS =====
 
-  // Extract visible text from page
-  function extractText() {
+  // Extract all visible text from page
+  function extractPageContent() {
     const excludeTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'SVG', 'NAV', 'FOOTER', 'HEADER'];
-    const textChunks = [];
+    const elements = document.querySelectorAll('p, article, section, div, main, h1, h2, h3, h4, h5, h6, li');
     
-    const walker = document.createTreeWalker(
-      document.body,
-      NodeFilter.SHOW_ELEMENT,
-      {
-        acceptNode(node) {
-          if (excludeTags.includes(node.tagName)) return NodeFilter.FILTER_REJECT;
-          
-          const style = window.getComputedStyle(node);
-          if (style.display === 'none' || style.visibility === 'hidden') {
-            return NodeFilter.FILTER_REJECT;
-          }
-          
-          return NodeFilter.FILTER_ACCEPT;
+    const textBlocks = [];
+    const seenText = new Set();
+
+    elements.forEach(el => {
+      if (excludeTags.includes(el.tagName)) return;
+      
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden') return;
+      
+      let text = '';
+      for (const node of el.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          text += node.textContent;
         }
       }
-    );
-
-    let node;
-    while ((node = walker.nextNode())) {
-      const text = (node.innerText || '').trim();
-      if (text && text.length > 30) {
-        textChunks.push(text);
+      
+      text = text.trim();
+      if (text.length > 20 && !seenText.has(text)) {
+        textBlocks.push(text);
+        seenText.add(text);
       }
-    }
-
-    return textChunks.join('\n\n') || document.body.innerText || '';
-  }
-
-  // Analyze text complexity
-  function analyzeComplexity(text) {
-    if (!text || text.length < CONFIG.minTextLength) {
-      return { isComplex: false, score: 0, reasons: [] };
-    }
-
-    const words = text.match(/\b[a-z]+\b/gi) || [];
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-    const reasons = [];
-    let score = 0;
-
-    // Check long words
-    const longWords = words.filter(w => w.length >= CONFIG.complexity.longWordChars);
-    const longWordRatio = words.length > 0 ? longWords.length / words.length : 0;
-    
-    if (longWordRatio > CONFIG.complexity.longWordRatio) {
-      score += 2;
-      reasons.push(`${(longWordRatio * 100).toFixed(0)}% long words`);
-    }
-
-    // Check jargon
-    const textLower = text.toLowerCase();
-    const jargonFound = Object.keys(JARGON_DICT).filter(term => 
-      textLower.includes(term.toLowerCase())
-    );
-    
-    if (jargonFound.length >= CONFIG.complexity.jargonMinCount) {
-      score += 3;
-      reasons.push(`${jargonFound.length} technical terms`);
-    }
-
-    // Check long sentences
-    const longSentences = sentences.filter(s => 
-      (s.match(/\b[a-z]+\b/gi) || []).length > CONFIG.complexity.longSentenceWords
-    );
-    const longSentRatio = sentences.length > 0 ? longSentences.length / sentences.length : 0;
-    
-    if (longSentRatio > CONFIG.complexity.longSentenceRatio) {
-      score += 2;
-      reasons.push(`${(longSentRatio * 100).toFixed(0)}% long sentences`);
-    }
-
-    // Check complex words
-    const complexWords = words.filter(w => 
-      WORD_SIMPLIFY[w.toLowerCase()]
-    );
-    if (complexWords.length > 8) {
-      score += 1;
-      reasons.push(`${complexWords.length} complex words`);
-    }
-
-    return {
-      isComplex: score >= 4,
-      score,
-      reasons,
-      stats: {
-        words: words.length,
-        sentences: sentences.length,
-        jargonTerms: jargonFound.length
-      }
-    };
-  }
-
-  // Improved text summarization
-  function summarizeText(text, level = 'middle') {
-    const sentences = (text.match(/[^.!?]+[.!?]+/g) || [])
-      .map(s => s.trim())
-      .filter(s => s.split(/\s+/).length > 5);
-    
-    if (sentences.length === 0) return [];
-
-    const sentenceCount = CONFIG.summaryLength[level] || 4;
-    if (sentences.length <= sentenceCount) return sentences;
-
-    // Calculate word frequencies
-    const wordFreq = {};
-    sentences.forEach(sent => {
-      const words = sent.toLowerCase().match(/\b[a-z]+\b/g) || [];
-      words.forEach(word => {
-        if (!STOP_WORDS.has(word) && word.length > 3) {
-          wordFreq[word] = (wordFreq[word] || 0) + 1;
-        }
-      });
     });
 
-    // Score sentences
-    const scored = sentences.map((sent, idx) => {
-      const words = sent.toLowerCase().match(/\b[a-z]+\b/g) || [];
-      let score = 0;
-      
-      words.forEach(word => {
-        if (!STOP_WORDS.has(word)) {
-          score += wordFreq[word] || 0;
-        }
-      });
-      
-      // Normalize by length
-      score = words.length > 0 ? score / Math.sqrt(words.length) : 0;
-      
-      // Position bonus (first and last sentences more important)
-      if (idx < sentences.length * 0.2) score *= 1.5;
-      if (idx > sentences.length * 0.8) score *= 1.3;
-      
-      return { sent, score, idx };
-    });
-
-    // Return top sentences in original order
-    return scored
-      .sort((a, b) => b.score - a.score)
-      .slice(0, sentenceCount)
-      .sort((a, b) => a.idx - b.idx)
-      .map(item => item.sent);
+    return textBlocks.join('\n\n');
   }
 
   // Simplify text
-  function simplifyText(text, stats) {
+  function simplifyText(text) {
     let simplified = text;
-    
-    // Replace complex words
+    let wordsChanged = 0;
+
     Object.entries(WORD_SIMPLIFY).forEach(([complex, simple]) => {
       const regex = new RegExp(`\\b${complex}\\b`, 'gi');
       const matches = simplified.match(regex);
       if (matches) {
-        stats.wordsSimplified += matches.length;
+        wordsChanged += matches.length;
         simplified = simplified.replace(regex, simple);
       }
     });
 
-    return simplified;
+    return { text: simplified, wordsChanged };
   }
 
-  // Break long sentences
-  function breakSentences(sentence, maxWords) {
-    const words = sentence.split(/\s+/);
-    if (words.length <= maxWords) return [sentence];
-
-    const chunks = [];
-    const breakPoints = [', ', '; ', ' and ', ' but ', ' or ', ' because ', ' when ', ' if '];
+  // Highlight jargon terms
+  function highlightJargon(text) {
+    let highlighted = text;
     
-    // Try to break at natural points
-    let remaining = sentence;
-    while (remaining.length > 0) {
-      if (remaining.split(/\s+/).length <= maxWords) {
-        chunks.push(remaining);
-        break;
-      }
-      
-      let found = false;
-      for (const bp of breakPoints) {
-        const idx = remaining.indexOf(bp, maxWords * 5);
-        if (idx > 0 && idx < remaining.length * 0.7) {
-          chunks.push(remaining.substring(0, idx).trim());
-          remaining = remaining.substring(idx + bp.length).trim();
-          found = true;
-          break;
-        }
-      }
-      
-      if (!found) {
-        // Fallback: break by word count
-        const chunk = remaining.split(/\s+/).slice(0, maxWords).join(' ');
-        chunks.push(chunk);
-        remaining = remaining.substring(chunk.length).trim();
-      }
-    }
-    
-    return chunks.filter(c => c.length > 0);
-  }
-
-  // Create simplified content with jargon highlighting
-  function createSimplifiedContent(sentences, level, stats) {
-    const fragment = document.createDocumentFragment();
-    const maxWords = CONFIG.maxSentenceWords[level] || 18;
-    
-    sentences.forEach(sentence => {
-      const simplified = simplifyText(sentence, stats);
-      const chunks = breakSentences(simplified, maxWords);
-      
-      chunks.forEach(chunk => {
-        const p = document.createElement('p');
-        p.className = 'explain-simplified-paragraph';
-        
-        // Highlight jargon terms
-        let html = chunk;
-        Object.entries(JARGON_DICT).forEach(([term, definition]) => {
-          const regex = new RegExp(`\\b(${term})\\b`, 'gi');
-          html = html.replace(regex, (match) => {
-            stats.jargonExplained++;
-            return `<span class="explain-jargon-term" data-definition="${definition}" title="${definition}">${match}</span>`;
-          });
-        });
-        
-        p.innerHTML = html;
-        fragment.appendChild(p);
+    Object.entries(JARGON_DICT).forEach(([term, definition]) => {
+      const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+      highlighted = highlighted.replace(regex, (match) => {
+        return `<span class="jargon-term" title="${definition}">${match}</span>`;
       });
     });
-    
-    return fragment;
+
+    return highlighted;
   }
 
-  // ===== UI FUNCTIONS =====
+  // Break into paragraphs
+  function formatParagraphs(text) {
+    return text
+      .split('\n\n')
+      .filter(p => p.trim().length > 0)
+      .map(p => `<p>${highlightJargon(p)}</p>`)
+      .join('');
+  }
 
-  // Show complexity banner
-  function showBanner() {
-    if (document.getElementById('explain-banner')) return;
+  // Generate simplified page HTML
+  function generateSimplifiedPage(originalText, simplifiedText, stats, pageTitle, pageUrl) {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simplified: ${pageTitle}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    const banner = document.createElement('div');
-    banner.id = 'explain-banner';
-    banner.className = 'explain-banner';
-    banner.innerHTML = `
-      <div class="explain-banner-content">
-        <div class="explain-banner-icon">🧠</div>
-        <div class="explain-banner-text">
-          <div class="explain-banner-title">Complex Content Detected</div>
-          <div class="explain-banner-subtitle">Let me simplify this for you</div>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .icon {
+      font-size: 48px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .original-url {
+      opacity: 0.9;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .original-url a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .stats {
+      display: flex;
+      gap: 30px;
+      padding: 20px 30px;
+      background: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-icon {
+      font-size: 24px;
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .content-section {
+      margin-bottom: 40px;
+    }
+
+    .content-section h2 {
+      font-size: 20px;
+      color: #1e293b;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .content-section p {
+      line-height: 1.8;
+      margin-bottom: 15px;
+      color: #334155;
+      font-size: 16px;
+    }
+
+    .simplified-content {
+      background: #dbeafe;
+      padding: 30px;
+      border-radius: 12px;
+      border-left: 5px solid #3b82f6;
+    }
+
+    .jargon-term {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 6px;
+      cursor: help;
+      font-weight: 600;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .jargon-term:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      white-space: normal;
+      width: 250px;
+      margin-bottom: 5px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .actions {
+      padding: 30px;
+      background: #f8fafc;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        border-radius: 0;
+      }
+
+      .stats {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .header, .actions, .stats {
+        display: none;
+      }
+
+      .container {
+        box-shadow: none;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-top">
+        <span class="icon">🧠</span>
+        <div>
+          <h1>Simplified Content</h1>
+          <div class="original-url">
+            From: <a href="${pageUrl}" target="_blank">${pageUrl}</a>
+          </div>
         </div>
-        <button class="explain-banner-btn">Simplify</button>
-        <button class="explain-banner-close">×</button>
       </div>
-    `;
+    </div>
 
-    document.body.appendChild(banner);
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-icon">📝</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.wordsChanged}</span>
+          <span class="stat-label">Words Simplified</span>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">📄</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.paragraphs}</span>
+          <span class="stat-label">Paragraphs</span>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">💡</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.jargonTerms}</span>
+          <span class="stat-label">Terms Explained</span>
+        </div>
+      </div>
+    </div>
 
-    banner.querySelector('.explain-banner-btn').onclick = () => {
-      banner.remove();
-      showOverlay();
-    };
+    <div class="content">
+      <div class="content-section simplified-content">
+        <h2>📚 Simplified Content</h2>
+        ${formatParagraphs(simplifiedText)}
+      </div>
+    </div>
 
-    banner.querySelector('.explain-banner-close').onclick = () => {
-      banner.remove();
-    };
-
-    setTimeout(() => banner.classList.add('explain-banner-visible'), 100);
-    setTimeout(() => banner.remove(), 10000);
+    <div class="actions">
+      <button class="btn btn-primary" onclick="window.print()">
+        <span>🖨️</span> Print This Page
+      </button>
+      <button class="btn btn-secondary" onclick="window.close()">
+        <span>❌</span> Close
+      </button>
+      <button class="btn btn-secondary" onclick="window.open('${pageUrl}', '_blank')">
+        <span>🔗</span> View Original
+      </button>
+    </div>
+  </div>
+</body>
+</html>`;
   }
 
-  // Show main overlay
-  function showOverlay() {
-    if (document.getElementById('explain-overlay')) return;
-
-    const text = extractText();
-    if (!text || text.length < 50) {
-      showNotification('Not enough content to simplify', 'warning');
+  // Process and open in new tab
+  function processAndOpenNewTab(textContent) {
+    if (!textContent || textContent.length < CONFIG.minTextLength) {
+      alert('Not enough content to simplify. Please try a page with more text.');
       return;
     }
 
-    createOverlay(text);
-  }
-
-  // Create overlay UI
-  function createOverlay(text) {
-    const overlay = document.createElement('div');
-    overlay.id = 'explain-overlay';
-    overlay.className = 'explain-overlay';
-
-    chrome.storage.sync.get(['readingLevel'], (data) => {
-      const level = data.readingLevel || 'middle';
-      
-      overlay.innerHTML = `
-        <div class="explain-backdrop"></div>
-        <div class="explain-content">
-          <div class="explain-header">
-            <div class="explain-title">
-              <span class="explain-icon">🧠</span>
-              <span>Page Simplified</span>
-            </div>
-            <select class="explain-level-select" id="level-select">
-              <option value="elementary" ${level === 'elementary' ? 'selected' : ''}>🌟 Elementary</option>
-              <option value="middle" ${level === 'middle' ? 'selected' : ''}>📚 Middle School</option>
-              <option value="high" ${level === 'high' ? 'selected' : ''}>🎓 High School</option>
-            </select>
-            <button class="explain-close" id="close-overlay">×</button>
-          </div>
-          
-          <div class="explain-body">
-            <div class="explain-panel">
-              <h3>Original Content</h3>
-              <div class="explain-original" id="original-content">
-                <div class="explain-loading">Analyzing...</div>
-              </div>
-            </div>
-            
-            <div class="explain-panel">
-              <h3>Simplified Content</h3>
-              <div class="explain-simplified" id="simplified-content">
-                <div class="explain-loading">Simplifying...</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="explain-footer">
-            <div class="explain-stats">
-              <span>📝 Words simplified: <strong id="words-count">0</strong></span>
-              <span>💡 Terms explained: <strong id="terms-count">0</strong></span>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(overlay);
-      setTimeout(() => overlay.classList.add('explain-overlay-visible'), 50);
-
-      // Event listeners
-      overlay.querySelector('#close-overlay').onclick = () => closeOverlay(overlay);
-      overlay.querySelector('.explain-backdrop').onclick = () => closeOverlay(overlay);
-      
-      const levelSelect = overlay.querySelector('#level-select');
-      levelSelect.onchange = () => {
-        const newLevel = levelSelect.value;
-        chrome.storage.sync.set({ readingLevel: newLevel });
-        processContent(text, newLevel, overlay);
-      };
-
-      // Initial processing
-      processContent(text, level, overlay);
-    });
-  }
-
-  // Process and display content
-  function processContent(text, level, overlay) {
-    const stats = { wordsSimplified: 0, jargonExplained: 0 };
-    
-    // Show original summary
-    const originalSummary = summarizeText(text, level);
-    const originalContainer = overlay.querySelector('#original-content');
-    originalContainer.innerHTML = '';
-    
-    const originalFragment = document.createDocumentFragment();
-    originalSummary.forEach(sentence => {
-      const p = document.createElement('p');
-      p.textContent = sentence;
-      originalFragment.appendChild(p);
-    });
-    originalContainer.appendChild(originalFragment);
-
-    // Show simplified content
-    const simplifiedContainer = overlay.querySelector('#simplified-content');
-    simplifiedContainer.innerHTML = '';
-    const simplifiedFragment = createSimplifiedContent(originalSummary, level, stats);
-    simplifiedContainer.appendChild(simplifiedFragment);
-
-    // Update stats
-    overlay.querySelector('#words-count').textContent = stats.wordsSimplified;
-    overlay.querySelector('#terms-count').textContent = stats.jargonExplained;
-
-    // Add tooltip listeners
-    setTimeout(() => addTooltipListeners(simplifiedContainer), 100);
-
-    // Update extension stats
-    chrome.runtime.sendMessage({
-      action: 'updateStats',
-      data: { pages: 1, words: stats.wordsSimplified }
-    });
-  }
-
-  // Add interactive tooltips to jargon terms
-  function addTooltipListeners(container) {
-    const terms = container.querySelectorAll('.explain-jargon-term');
-    
-    terms.forEach(term => {
-      term.addEventListener('mouseenter', (e) => {
-        const definition = e.target.dataset.definition;
-        showTooltip(e.target, definition);
-      });
-      
-      term.addEventListener('mouseleave', () => {
-        removeTooltip();
-      });
-    });
-  }
-
-  // Show tooltip
-  function showTooltip(element, text) {
-    removeTooltip();
-    
-    const tooltip = document.createElement('div');
-    tooltip.className = 'explain-tooltip';
-    tooltip.textContent = text;
-    document.body.appendChild(tooltip);
-
-    const rect = element.getBoundingClientRect();
-    const tooltipRect = tooltip.getBoundingClientRect();
-    
-    let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-    let top = rect.top - tooltipRect.height - 10;
-    
-    // Adjust if off screen
-    if (left < 10) left = 10;
-    if (left + tooltipRect.width > window.innerWidth - 10) {
-      left = window.innerWidth - tooltipRect.width - 10;
+    // Limit content length
+    if (textContent.length > CONFIG.maxContentLength) {
+      textContent = textContent.substring(0, CONFIG.maxContentLength) + '...';
     }
-    if (top < 10) {
-      top = rect.bottom + 10;
-      tooltip.classList.add('explain-tooltip-bottom');
+
+    // Simplify the text
+    const { text: simplifiedText, wordsChanged } = simplifyText(textContent);
+
+    // Calculate stats
+    const paragraphs = simplifiedText.split('\n\n').filter(p => p.trim().length > 0).length;
+    const jargonTerms = Object.keys(JARGON_DICT).filter(term => 
+      simplifiedText.toLowerCase().includes(term.toLowerCase())
+    ).length;
+
+    const stats = {
+      wordsChanged,
+      paragraphs,
+      jargonTerms
+    };
+
+    // Get page info
+    const pageTitle = document.title || 'Untitled Page';
+    const pageUrl = window.location.href;
+
+    // Generate HTML
+    const html = generateSimplifiedPage(textContent, simplifiedText, stats, pageTitle, pageUrl);
+
+    // Open in new tab
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(html);
+      newWindow.document.close();
+
+      // Update stats
+      chrome.runtime.sendMessage({
+        action: 'updateStats',
+        data: { pages: 1, words: wordsChanged }
+      });
+    } else {
+      alert('Please allow pop-ups for this site to view the simplified content.');
     }
+  }
+
+  // Handle full page simplification
+  function simplifyFullPage() {
+    const content = extractPageContent();
+    processAndOpenNewTab(content);
+  }
+
+  // Handle selected text simplification
+  function simplifySelection() {
+    const selectedText = window.getSelection().toString().trim();
     
-    tooltip.style.left = left + 'px';
-    tooltip.style.top = top + 'px';
-    
-    setTimeout(() => tooltip.classList.add('explain-tooltip-visible'), 10);
+    if (!selectedText) {
+      alert('Please select some text first!');
+      return;
+    }
+
+    if (selectedText.length < 50) {
+      alert('Please select more text (at least 50 characters).');
+      return;
+    }
+
+    processAndOpenNewTab(selectedText);
   }
 
-  // Remove tooltip
-  function removeTooltip() {
-    const existing = document.querySelector('.explain-tooltip');
-    if (existing) existing.remove();
-  }
+  // ===== EVENT LISTENERS =====
 
-  // Close overlay
-  function closeOverlay(overlay) {
-    overlay.classList.remove('explain-overlay-visible');
-    setTimeout(() => overlay.remove(), 300);
-  }
+  // Listen for messages from background/popup
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'simplifyPage') {
+      simplifyFullPage();
+      sendResponse({ success: true });
+    } else if (request.action === 'simplifySelection') {
+      simplifySelection();
+      sendResponse({ success: true });
+    }
+    return true;
+  });
 
-  // Show notification
-  function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `explain-notification explain-notification-${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    setTimeout(() => notification.classList.add('explain-notification-visible'), 10);
-    setTimeout(() => {
-      notification.classList.remove('explain-notification-visible');
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
-  }
+  // Listen for custom events
+  window.addEventListener('explain-page-trigger', simplifyFullPage);
+  window.addEventListener('explain-selection-trigger', simplifySelection);
 
-  // ===== INITIALIZATION =====
-
-  function init() {
-    // Check if auto-detect is enabled
-    chrome.storage.sync.get(['autoDetect'], (data) => {
-      if (data.autoDetect !== false) {
-        setTimeout(() => {
-          const text = extractText();
-          const analysis = analyzeComplexity(text);
-          
-          if (analysis.isComplex) {
-            console.log('Complex content detected:', analysis);
-            showBanner();
-          }
-        }, 2000);
-      }
-    });
-
-    // Listen for manual trigger
-    window.addEventListener('explain-page-trigger', () => {
-      showOverlay();
-    });
-  }
-
-  // Start
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  console.log('✨ Explain This Page v5.0 loaded - Ready to simplify!');
 
 })();
