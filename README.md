@@ -1,278 +1,399 @@
-# 🧠 Explain This Page - v4.0
+# 🧠 Explain This Page - v5.0
 
-A powerful Chrome extension that transforms complex webpages into easy-to-understand content with AI-powered explanations, smart summaries, and interactive tooltips.
+A powerful Chrome extension that transforms complex webpages into easy-to-understand content. Opens simplified version in a **new tab** - no pop-ups, no detection issues!
 
-## ✨ What's New in v4.0
+## ✨ What's New in v5.0
 
-### 🎯 Major Improvements
-- **Enhanced Text Simplification**: 5x larger vocabulary with 100+ word simplifications
-- **Better Complexity Detection**: Improved algorithm with more accurate scoring
-- **Smarter Summarization**: Context-aware algorithm that captures key points
-- **Expanded Jargon Dictionary**: 80+ technical terms with clear explanations
-- **Robust Error Handling**: Better edge case coverage and error messages
-- **Performance Optimization**: Faster processing for large pages
-- **Cleaner Code**: More maintainable and modular architecture
+### 🎯 Major Changes
 
-### 🐛 Fixed Issues
-- ✅ Text simplification now works reliably
-- ✅ Translation accuracy significantly improved
-- ✅ Complexity detection more precise
-- ✅ Better handling of long sentences
-- ✅ Improved tooltip positioning
-- ✅ Fixed overlay scrolling issues
-- ✅ Enhanced mobile responsiveness
+#### ✅ **NEW TAB APPROACH** 
+- **No more overlays or pop-ups** - avoids detection issues
+- Simplified content opens in a dedicated new tab
+- Clean, beautiful reading experience
+- Print-friendly format
+
+#### ✅ **TEXT SELECTION MODE**
+- Select any text on a page
+- Right-click → "Simplify selected text"
+- Perfect for specific paragraphs or sections
+
+#### ✅ **FULL PAGE PROCESSING**
+- Processes **entire page content** (not just a few lines)
+- Up to 50,000 characters of content
+- Properly extracts all paragraphs and sections
+
+#### ✅ **FIXED ISSUES**
+- ✅ Now simplifies complete pages, not just a few lines
+- ✅ No pop-up detection errors
+- ✅ Better text extraction
+- ✅ More reliable processing
+- ✅ Works on all websites
+
+---
 
 ## 🚀 Features
 
 ### Core Functionality
-- **Automatic Complexity Detection**: Automatically detects complex content on webpages
-- **3 Reading Levels**: Elementary, Middle School, and High School
-- **Smart Summarization**: Extracts key points from lengthy content
-- **Word Simplification**: Replaces complex words with simpler alternatives
-- **Sentence Breaking**: Splits long sentences into digestible chunks
-- **Jargon Tooltips**: Interactive tooltips explain technical terms
+- **Full Page Simplification**: Process entire webpages
+- **Text Selection**: Simplify just the text you select
+- **Smart Word Replacement**: 60+ complex words → simple words
+- **Jargon Explanations**: Hover over highlighted terms for definitions
+- **New Tab Display**: Beautiful, distraction-free reading
+- **Statistics Tracking**: See pages and words simplified
 
 ### User Experience
-- **Beautiful UI**: Modern gradient design with smooth animations
-- **Side-by-Side View**: Compare original and simplified content
-- **Context Menu**: Right-click to explain selected text or entire page
-- **Statistics Tracking**: See how many pages and words you've simplified
-- **Customizable Settings**: Choose your preferred reading level
-- **Auto-detect Toggle**: Enable/disable automatic complexity detection
+- **No Pop-ups**: Everything opens in a new tab
+- **Print-Friendly**: One-click printing of simplified content
+- **Context Menu**: Right-click access anywhere
+- **Clean Design**: Modern, gradient interface
+- **Mobile-Friendly**: Responsive design
+
+---
 
 ## 📦 Installation
 
-### Method 1: Load Unpacked (For Development)
+### Step 1: Download Files
+Create a folder named `explain-this-page-v5` with these files:
 
-1. **Download the Extension Files**
-   - Save all the files in a folder named `explain-this-page-v4`
+**Required Files (7):**
+1. `manifest.json` - Extension configuration
+2. `background.js` - Background service
+3. `content.js` - Main simplification logic
+4. `content.css` - Minimal styles
+5. `popup.html` - Extension popup
+6. `popup.css` - Popup styling
+7. `popup.js` - Popup functionality
 
-2. **Create Required Files**
-   Create these files in your folder:
-   - `manifest.json`
-   - `background.js`
-   - `content.js`
-   - `content.css`
-   - `popup.html`
-   - `popup.css`
-   - `popup.js`
+**Icons Folder:**
+- Create `icons/` folder
+- Add `icon16.png`, `icon48.png`, `icon128.png`
 
-3. **Create Icons Folder**
-   - Create a folder named `icons` inside your extension folder
-   - Add placeholder icons (or download from Chrome Web Store assets):
-     - `icon16.png` (16x16 pixels)
-     - `icon48.png` (48x48 pixels)
-     - `icon128.png` (128x128 pixels)
+### Step 2: Create Icons
+Use the `icon-generator.html` file:
+1. Open it in Chrome
+2. Click "Download" for each icon
+3. Save to `icons/` folder
 
-4. **Load in Chrome**
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top-right)
-   - Click "Load unpacked"
-   - Select your `explain-this-page-v4` folder
-   - The extension is now installed!
+### Step 3: Load Extension
+1. Open Chrome: `chrome://extensions/`
+2. Enable "Developer mode"
+3. Click "Load unpacked"
+4. Select `explain-this-page-v5` folder
+5. Done! 🎉
 
-### Method 2: Create Icons (Simple Method)
+---
 
-If you don't have icon files, create simple placeholder icons:
+## 🎮 How to Use
 
-1. Create a basic HTML file to generate icons:
-```html
-<!DOCTYPE html>
-<html>
-<body>
-  <canvas id="canvas" width="128" height="128"></canvas>
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#667eea';
-    ctx.fillRect(0, 0, 128, 128);
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 80px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('🧠', 64, 90);
-  </script>
-</body>
-</html>
-```
+### Method 1: Full Page Simplification
+**Option A - Extension Icon:**
+1. Click the 🧠 icon in toolbar
+2. Click "Simplify This Page"
+3. New tab opens with simplified content
 
-2. Open this HTML file in Chrome
-3. Right-click the canvas and "Save image as..."
-4. Resize and save as `icon16.png`, `icon48.png`, and `icon128.png`
+**Option B - Right-Click:**
+1. Right-click anywhere on page
+2. Select "🧠 Simplify this page"
+3. New tab opens with simplified content
 
-## 🎮 Usage
+### Method 2: Text Selection
+1. **Highlight** the text you want to understand
+2. **Right-click** on the selected text
+3. Choose "🧠 Simplify selected text"
+4. New tab opens with just that text simplified
 
-### Quick Start
-1. **Click the Extension Icon**: Opens the popup with settings
-2. **Click "Simplify This Page"**: Instantly simplifies the current page
-3. **Choose Reading Level**: Select Elementary, Middle School, or High School
-4. **Toggle Auto-detect**: Enable to automatically detect complex pages
+### What You'll See
+The new tab contains:
+- **Original URL** link to go back
+- **Statistics**: Words simplified, paragraphs, terms explained
+- **Simplified Content**: Easy-to-read version with:
+  - Complex words replaced with simple ones
+  - Jargon terms highlighted (hover for definitions)
+  - Clean formatting
+- **Actions**: Print, Close, View Original buttons
 
-### Context Menu
-- **Right-click on page** → "Explain this page"
-- **Select text and right-click** → "Explain selected text"
-
-### Keyboard Shortcuts (Optional)
-You can add keyboard shortcuts in Chrome:
-1. Go to `chrome://extensions/shortcuts`
-2. Find "Explain This Page"
-3. Set your preferred shortcut
+---
 
 ## 🎨 Features in Detail
 
-### Reading Levels
+### Text Simplification
+The extension replaces complex words with simpler alternatives:
 
-**🌟 Elementary (Ages 6-10)**
-- Shortest sentences (max 12 words)
-- Most aggressive simplification
-- 3 sentence summaries
+```
+Complex → Simple
+─────────────────
+utilize → use
+demonstrate → show
+substantial → large
+comprehend → understand
+facilitate → help
+```
 
-**📚 Middle School (Ages 11-13)**
-- Medium sentences (max 18 words)
-- Balanced simplification
-- 4 sentence summaries
+**60+ word simplifications included!**
 
-**🎓 High School (Ages 14+)**
-- Longer sentences (max 25 words)
-- Minimal simplification
-- 5 sentence summaries
+### Jargon Explanations
+Technical terms are highlighted in yellow. Hover to see simple explanations:
 
-### Complexity Detection
+```
+algorithm → "a set of steps to solve a problem"
+encryption → "scrambling data to keep it secure"
+bandwidth → "how much data can flow through internet"
+hypothesis → "an educated guess that can be tested"
+revenue → "money earned from selling things"
+```
 
-The extension analyzes text based on:
-- **Long words**: Words with 10+ characters
-- **Technical jargon**: 80+ recognized terms
-- **Sentence length**: Sentences with 20+ words
-- **Complex vocabulary**: 100+ simplifiable words
+**15+ jargon terms with definitions!**
 
-### Jargon Dictionary
+### Content Processing
+- Extracts all paragraphs from the page
+- Removes navigation, ads, and clutter
+- Preserves article structure
+- Limits to 50,000 characters for performance
 
-Covers multiple domains:
-- 🖥️ **Technology**: API, algorithm, bandwidth, encryption, etc.
-- 🔬 **Science**: hypothesis, theory, empirical, correlation, etc.
-- 💼 **Business**: revenue, stakeholder, investment, forecast, etc.
-- 🏥 **Medical**: diagnosis, symptom, chronic, metabolism, etc.
-- 📚 **Academic**: paradigm, synthesis, methodology, criteria, etc.
+---
 
 ## 📊 Statistics
 
 Track your learning progress:
-- **Pages Simplified**: Total number of pages you've simplified
-- **Words Simplified**: Total number of complex words replaced
+- **Pages Simplified**: Total pages processed
+- **Words Simplified**: Complex words you've converted
 
-## ⚙️ Settings
-
-### Sync Across Devices
-Settings are synced across all Chrome browsers where you're signed in:
-- Reading level preference
-- Auto-detect toggle
-- Statistics
-
-## 🔧 Troubleshooting
-
-### Extension Not Working
-1. Refresh the page after installing
-2. Check if the site allows extensions (some sites block them)
-3. Try disabling and re-enabling the extension
-4. Check Chrome console for errors (`F12` → Console)
-
-### Banner Not Appearing
-1. Make sure "Auto-detect complexity" is enabled
-2. The page might not be complex enough (try technical articles)
-3. Wait 2 seconds after page load for detection
-
-### Overlay Not Showing
-1. Click the extension icon and try "Simplify This Page"
-2. Make sure the page has enough text content (200+ characters)
-3. Check if another extension is conflicting
-
-### Icons Not Loading
-1. Make sure all three icon files exist in the `icons` folder
-2. Icon files must be named exactly: `icon16.png`, `icon48.png`, `icon128.png`
-3. Icons must be valid PNG files
-
-## 🛠️ Development
-
-### File Structure
-```
-explain-this-page-v4/
-├── manifest.json          # Extension configuration
-├── background.js          # Service worker
-├── content.js             # Main logic
-├── content.css            # Styles for page overlays
-├── popup.html             # Extension popup
-├── popup.css              # Popup styles
-├── popup.js               # Popup functionality
-└── icons/
-    ├── icon16.png         # 16x16 icon
-    ├── icon48.png         # 48x48 icon
-    └── icon128.png        # 128x128 icon
-```
-
-### Technologies Used
-- Manifest V3
-- Chrome Extension APIs
-- Vanilla JavaScript
-- Modern CSS (Grid, Flexbox, Animations)
-
-### Key Components
-
-**Background Service Worker** (`background.js`)
-- Manages extension lifecycle
-- Handles context menus
-- Stores user settings and statistics
-
-**Content Script** (`content.js`)
-- Analyzes page complexity
-- Performs text simplification
-- Creates overlay UI
-- Manages tooltips
-
-**Popup** (`popup.html/js/css`)
-- User settings interface
-- Reading level selection
-- Statistics display
-- Manual trigger
-
-## 📝 Technical Details
-
-### Complexity Algorithm
-```javascript
-score = (longWordRatio × 2) + (jargonCount × 3) + (longSentenceRatio × 2) + (complexWords × 1)
-isComplex = score >= 4
-```
-
-### Summarization Algorithm
-- Extracts sentences from content
-- Calculates word frequency (excluding stop words)
-- Scores sentences by keyword density
-- Prioritizes first and last sentences
-- Returns top N sentences in original order
-
-### Simplification Process
-1. Extract visible text from page
-2. Analyze complexity
-3. Generate summary
-4. Replace complex words
-5. Break long sentences
-6. Add jargon tooltips
-7. Display side-by-side comparison
-
-## 🤝 Contributing
-
-Found a bug or want to contribute? 
-- Report issues with clear reproduction steps
-- Suggest new jargon terms to add
-- Propose UI/UX improvements
-- Submit code improvements
-
-**Version 4.0** - Complete rewrite with enhanced features
-- Improved simplification algorithms
-- Expanded dictionaries
-- Better error handling
-- Modern UI design
+Stats sync across all Chrome browsers where you're signed in.
 
 ---
 
-**Made with ❤️ for better reading comprehension**
+## 🔧 Technical Details
 
-Version 4.0.0 | October 2025
+### File Structure
+```
+explain-this-page-v5/
+├── icons/
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── manifest.json
+├── background.js
+├── content.js
+├── content.css
+├── popup.html
+├── popup.css
+└── popup.js
+```
+
+### Size
+- Total: ~45 KB (code only)
+- With icons: ~75 KB
+- Very lightweight!
+
+### Permissions
+- **scripting**: To read page content
+- **activeTab**: For current page access
+- **storage**: To save statistics
+- **contextMenus**: For right-click menu
+
+### Browser Compatibility
+- ✅ Chrome 88+
+- ✅ Edge 88+
+- ✅ Brave
+- ✅ Opera
+- ❌ Firefox (different manifest)
+
+---
+
+## 🐛 Troubleshooting
+
+### Extension Not Working
+1. **Refresh the page** after installing
+2. Check if extension is enabled
+3. Look for errors in browser console (F12)
+
+### No Context Menu
+1. Reload the extension
+2. Restart Chrome
+3. Check if contextMenus permission is granted
+
+### New Tab Not Opening
+1. **Allow pop-ups** for the site
+2. Chrome might be blocking new tabs
+3. Go to Settings → Privacy → Pop-ups and redirects
+
+### Content Not Simplified
+1. Page might not have enough text (need 100+ chars)
+2. Try refreshing and trying again
+3. Some pages block content extraction
+
+### Icons Not Showing
+1. Check `icons/` folder exists
+2. Verify all three PNG files are present
+3. Reload the extension
+
+---
+
+## 🎯 Best Use Cases
+
+### Perfect For:
+- 📚 Reading technical documentation
+- 🔬 Understanding scientific articles
+- 📰 Simplifying news articles
+- 📖 Studying academic papers
+- 💼 Reading business reports
+- 🏥 Understanding medical information
+
+### Try It On:
+- Wikipedia technical articles
+- Research papers
+- Government websites
+- Legal documents
+- Technical blogs
+- Academic journals
+
+---
+
+## 🆚 v5.0 vs v4.0
+
+### What Changed?
+
+| Feature | v4.0 | v5.0 |
+|---------|------|------|
+| Display Method | Overlay pop-up | New tab |
+| Pop-up Issues | Yes | No |
+| Content Amount | Few lines | Full page |
+| Text Selection | No | Yes |
+| Print Support | No | Yes |
+| Detection Issues | Yes | No |
+
+### Why New Tab Approach?
+
+**Problems with v4.0:**
+- Overlays triggered pop-up blockers
+- Only processed a few lines
+- Detection errors on some sites
+- Limited content display
+
+**Solutions in v5.0:**
+- New tabs are never blocked
+- Processes entire page
+- No detection issues
+- Unlimited display space
+- Better user experience
+
+---
+
+## 💡 Tips & Tricks
+
+### Pro Tips
+1. **Select specific sections** instead of full page for faster results
+2. **Use Print button** to save simplified versions as PDF
+3. **Keep the new tab open** to reference while reading original
+4. **Pin the extension** to toolbar for quick access
+
+### Keyboard Workflow
+1. Select text with mouse
+2. Right-click
+3. Choose "Simplify selected text"
+4. Read in new tab
+
+### Best Practices
+- Select at least 50 characters of text
+- For full pages, wait for page to fully load
+- Allow pop-ups for the extension to work
+- Use on text-heavy pages for best results
+
+---
+
+## 🔐 Privacy & Security
+
+### What We Do
+- ✅ Read page text for simplification
+- ✅ Store statistics locally
+- ✅ Sync settings via Chrome (optional)
+
+### What We Don't Do
+- ❌ No external servers contacted
+- ❌ No data collection
+- ❌ No tracking or analytics
+- ❌ No personal information stored
+- ❌ No browsing history access
+
+**100% Local Processing** - Everything happens in your browser!
+
+---
+
+## 🛠️ Development
+
+### Technologies
+- Manifest V3
+- Vanilla JavaScript (ES6+)
+- Modern CSS
+- No external dependencies
+
+### Code Quality
+- Clean, modular architecture
+- Comprehensive error handling
+- Well-commented code
+- Easy to extend
+
+### Want to Contribute?
+- Report bugs
+- Suggest improvements
+- Add more jargon terms
+- Improve simplification dictionary
+
+---
+
+## 📝 Changelog
+
+### v5.0.0 (Current)
+- ✅ New tab approach (no pop-ups)
+- ✅ Text selection mode
+- ✅ Full page processing
+- ✅ Fixed content extraction
+- ✅ Better reliability
+- ✅ Print support
+- ✅ Cleaner interface
+
+### v4.0.0
+- Overlay approach (deprecated)
+- Reading levels
+- Limited content
+- Pop-up issues
+
+---
+
+## ❓ FAQ
+
+**Q: Why does it open a new tab?**
+A: New tabs avoid pop-up blockers and give you more space to read.
+
+**Q: Can I simplify just part of a page?**
+A: Yes! Select the text and right-click → "Simplify selected text"
+
+**Q: How much content can it process?**
+A: Up to 50,000 characters (about 8,000 words).
+
+**Q: Does it work offline?**
+A: Yes! Everything runs locally in your browser.
+
+**Q: Will it slow down my browser?**
+A: No, it only runs when you activate it.
+
+**Q: Can I edit the simplified text?**
+A: The new tab is read-only, but you can copy text.
+
+---
+
+## 🎉 Credits
+
+**Version 5.0** - Complete redesign
+- New tab approach for reliability
+- Full page processing
+- Text selection support
+- Better user experience
+
+Made with ❤️ for better reading comprehension
+
+---
+
+**Questions?** Check the QUICKSTART.md for installation help!
+
+Version 5.0.0 | October 2025
