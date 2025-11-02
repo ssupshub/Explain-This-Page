@@ -593,10 +593,6 @@
       });
     }
 
-    // Load saved theme
-    const savedTheme = localStorage.getItem('simplify-theme') || 'light';
-    setTheme(savedTheme);
-
     // PDF Download Function
     function downloadPDF() {
       const button = event.target.closest('.btn');
@@ -607,11 +603,39 @@
       // Use browser's print to PDF
       window.print();
       
-      setTimeout(() => {
+      setTimeout(function() {
         button.innerHTML = originalHTML;
         button.disabled = false;
       }, 1000);
     }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', function() {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('simplify-theme') || 'light';
+      setTheme(savedTheme);
+
+      // Setup event listeners
+      document.querySelectorAll('.theme-btn').forEach(function(btn, idx) {
+        btn.addEventListener('click', function() {
+          setTheme(idx === 0 ? 'light' : 'dark');
+        });
+      });
+
+      document.querySelector('.btn-success').addEventListener('click', downloadPDF);
+      
+      document.querySelectorAll('.btn-primary')[0].addEventListener('click', function() {
+        window.print();
+      });
+      
+      document.querySelectorAll('.btn-secondary')[0].addEventListener('click', function() {
+        window.close();
+      });
+      
+      document.querySelectorAll('.btn-secondary')[1].addEventListener('click', function() {
+        window.open('${pageUrl}', '_blank');
+      });
+    });
   </script>
 </body>
 </html>`;
