@@ -1,38 +1,26 @@
-// Popup Script v4.0
+// Popup Script v5.0 - Fixed
 'use strict';
 
 class PopupController {
   constructor() {
     this.elements = {
       explainBtn: document.getElementById('explainBtn'),
-      autoDetect: document.getElementById('autoDetect'),
       pagesCount: document.getElementById('pagesCount'),
-      wordsCount: document.getElementById('wordsCount'),
-      levelRadios: document.querySelectorAll('input[name="level"]')
+      wordsCount: document.getElementById('wordsCount')
     };
     
     this.init();
   }
 
   init() {
-    this.loadSettings();
+    // Verify elements exist before proceeding
+    if (!this.elements.explainBtn || !this.elements.pagesCount || !this.elements.wordsCount) {
+      console.error('Required popup elements not found');
+      return;
+    }
+
     this.loadStats();
     this.attachEventListeners();
-  }
-
-  loadSettings() {
-    chrome.storage.sync.get(['readingLevel', 'autoDetect'], (data) => {
-      // Set reading level
-      const level = data.readingLevel || 'middle';
-      this.elements.levelRadios.forEach(radio => {
-        if (radio.value === level) {
-          radio.checked = true;
-        }
-      });
-
-      // Set auto-detect
-      this.elements.autoDetect.checked = data.autoDetect !== false;
-    });
   }
 
   loadStats() {
@@ -45,11 +33,15 @@ class PopupController {
   }
 
   updateStats(stats) {
-    this.animateNumber(this.elements.pagesCount, stats.pagesExplained);
-    this.animateNumber(this.elements.wordsCount, stats.wordsSimplified);
+    if (this.elements.pagesCount && this.elements.wordsCount) {
+      this.animateNumber(this.elements.pagesCount, stats.pagesExplained);
+      this.animateNumber(this.elements.wordsCount, stats.wordsSimplified);
+    }
   }
 
   animateNumber(element, target) {
+    if (!element) return;
+    
     const current = parseInt(element.textContent) || 0;
     const increment = Math.ceil((target - current) / 20);
     
@@ -62,33 +54,17 @@ class PopupController {
   }
 
   attachEventListeners() {
+    if (!this.elements.explainBtn) return;
+
     // Explain button
     this.elements.explainBtn.addEventListener('click', () => {
       this.triggerExplanation();
     });
-
-    // Reading level change
-    this.elements.levelRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.checked) {
-          this.saveSettings({ readingLevel: radio.value });
-          this.showFeedback('Reading level updated!');
-        }
-      });
-    });
-
-    // Auto-detect toggle
-    this.elements.autoDetect.addEventListener('change', () => {
-      this.saveSettings({ autoDetect: this.elements.autoDetect.checked });
-      this.showFeedback(
-        this.elements.autoDetect.checked 
-          ? 'Auto-detect enabled!' 
-          : 'Auto-detect disabled!'
-      );
-    });
   }
 
   triggerExplanation() {
+    if (!this.elements.explainBtn) return;
+
     // Add loading state
     this.elements.explainBtn.disabled = true;
     this.elements.explainBtn.innerHTML = `
@@ -99,35 +75,31 @@ class PopupController {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (!tabs[0]) {
         this.showError('No active tab found');
+        this.resetButton();
         return;
       }
 
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        func: () => window.dispatchEvent(new Event('explain-page-trigger'))
-      }).then(() => {
-        this.showFeedback('Page is being simplified!');
-        setTimeout(() => window.close(), 1000);
-      }).catch((error) => {
-        console.error('Error:', error);
-        this.showError('Failed to simplify page');
-        this.resetButton();
-      });
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'simplifyPage' })
+        .then(() => {
+          this.showFeedback('Opening simplified page in new tab!');
+          setTimeout(() => window.close(), 1500);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          this.showError('Please refresh the page and try again');
+          this.resetButton();
+        });
     });
   }
 
   resetButton() {
+    if (!this.elements.explainBtn) return;
+
     this.elements.explainBtn.disabled = false;
     this.elements.explainBtn.innerHTML = `
       <span class="btn-icon">✨</span>
       Simplify This Page
     `;
-  }
-
-  saveSettings(settings) {
-    chrome.storage.sync.set(settings, () => {
-      console.log('Settings saved:', settings);
-    });
   }
 
   showFeedback(message) {
