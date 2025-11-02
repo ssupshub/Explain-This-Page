@@ -497,12 +497,24 @@
 
   // Listen for messages from background/popup
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'simplifyPage') {
-      simplifyFullPage();
-      sendResponse({ success: true });
-    } else if (request.action === 'simplifySelection') {
-      simplifySelection();
-      sendResponse({ success: true });
+    try {
+      if (request.action === 'ping') {
+        sendResponse({ success: true, ready: true });
+      } else if (request.action === 'simplifyPage') {
+        simplifyFullPage();
+        sendResponse({ success: true });
+      } else if (request.action === 'simplifySelection') {
+        simplifySelection();
+        sendResponse({ success: true });
+      } else if (request.action === 'showNotification') {
+        alert(request.message);
+        sendResponse({ success: true });
+      } else {
+        sendResponse({ success: false, error: 'Unknown action' });
+      }
+    } catch (error) {
+      console.error('Content script error:', error);
+      sendResponse({ success: false, error: error.message });
     }
     return true;
   });
