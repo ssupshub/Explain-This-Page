@@ -168,11 +168,18 @@
 
     .icon {
       font-size: 48px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     h1 {
       font-size: 28px;
       margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .original-url {
@@ -184,14 +191,19 @@
     .original-url a {
       color: white;
       text-decoration: underline;
+      transition: opacity 0.3s ease;
+    }
+
+    .original-url a:hover {
+      opacity: 0.8;
     }
 
     .stats {
       display: flex;
       gap: 30px;
       padding: 20px 30px;
-      background: #f8fafc;
-      border-bottom: 2px solid #e2e8f0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-bottom: 2px solid #cbd5e1;
     }
 
     .stat {
@@ -212,13 +224,17 @@
     .stat-value {
       font-size: 24px;
       font-weight: 700;
-      color: #667eea;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .stat-label {
       font-size: 12px;
       color: #64748b;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .content {
@@ -234,7 +250,8 @@
       color: #1e293b;
       margin-bottom: 20px;
       padding-bottom: 10px;
-      border-bottom: 3px solid #667eea;
+      border-bottom: 3px solid;
+      border-image: linear-gradient(90deg, #667eea, #764ba2) 1;
     }
 
     .content-section p {
@@ -245,10 +262,11 @@
     }
 
     .simplified-content {
-      background: #dbeafe;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
       padding: 30px;
       border-radius: 12px;
       border-left: 5px solid #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
     }
 
     .jargon-term {
@@ -260,6 +278,13 @@
       font-weight: 600;
       position: relative;
       white-space: nowrap;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+    }
+
+    .jargon-term:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4);
     }
 
     .jargon-term:hover::after {
@@ -278,15 +303,28 @@
       margin-bottom: 5px;
       z-index: 1000;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-weight: normal;
+    }
+
+    .jargon-term:hover::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1e293b;
+      margin-bottom: -6px;
     }
 
     .actions {
       padding: 30px;
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       display: flex;
       gap: 15px;
       justify-content: center;
-      border-top: 2px solid #e2e8f0;
+      border-top: 2px solid #cbd5e1;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -300,6 +338,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+      transform: translateY(0);
     }
 
     .btn-primary {
@@ -307,9 +355,9 @@
       color: white;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
     }
 
     .btn-secondary {
@@ -321,6 +369,83 @@
     .btn-secondary:hover {
       background: #667eea;
       color: white;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+    }
+
+    .theme-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .theme-btn.active {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Dark Theme */
+    body.dark-theme {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+
+    body.dark-theme .container {
+      background: #1e293b;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    body.dark-theme .header {
+      background: linear-gradient(135deg, #334155, #1e293b);
+    }
+
+    body.dark-theme .stats {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      border-bottom-color: #475569;
+    }
+
+    body.dark-theme .stat-label {
+      color: #94a3b8;
+    }
+
+    body.dark-theme .content-section h2 {
+      color: #f1f5f9;
+    }
+
+    body.dark-theme .content-section p {
+      color: #cbd5e1;
+    }
+
+    body.dark-theme .simplified-content {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+      border-left-color: #60a5fa;
+    }
+
+    body.dark-theme .actions {
+      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      border-top-color: #475569;
     }
 
     @media (max-width: 768px) {
@@ -340,6 +465,12 @@
       .actions {
         flex-direction: column;
       }
+
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 8px 15px;
+      }
     }
 
     @media print {
@@ -348,18 +479,48 @@
         padding: 0;
       }
 
-      .header, .actions, .stats {
+      .header, .actions, .stats, .theme-toggle {
         display: none;
       }
 
       .container {
         box-shadow: none;
         max-width: 100%;
+        border-radius: 0;
+      }
+
+      .simplified-content {
+        border-left: 3px solid #3b82f6;
+      }
+
+      .jargon-term {
+        background: #fbbf24;
+        color: #1e293b;
+        padding: 1px 4px;
+        page-break-inside: avoid;
+      }
+
+      .jargon-term::after {
+        content: " (" attr(title) ")";
+        background: none;
+        color: #64748b;
+        position: static;
+        transform: none;
+        padding: 0;
+        margin: 0;
+        font-size: inherit;
+        font-style: italic;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <button class="theme-btn active" onclick="setTheme('light')" title="Light Theme">☀️</button>
+    <button class="theme-btn" onclick="setTheme('dark')" title="Dark Theme">🌙</button>
+  </div>
+
   <div class="container">
     <div class="header">
       <div class="header-top">
@@ -405,6 +566,9 @@
     </div>
 
     <div class="actions">
+      <button class="btn btn-success" onclick="downloadPDF()">
+        <span>📥</span> Download as PDF
+      </button>
       <button class="btn btn-primary" onclick="window.print()">
         <span>🖨️</span> Print This Page
       </button>
@@ -416,6 +580,39 @@
       </button>
     </div>
   </div>
+
+  <script>
+    // Theme Management
+    function setTheme(theme) {
+      document.body.className = theme === 'dark' ? 'dark-theme' : '';
+      localStorage.setItem('simplify-theme', theme);
+      
+      // Update active button
+      document.querySelectorAll('.theme-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (theme === 'light' && idx === 0) || (theme === 'dark' && idx === 1));
+      });
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('simplify-theme') || 'light';
+    setTheme(savedTheme);
+
+    // PDF Download Function
+    function downloadPDF() {
+      const button = event.target.closest('.btn');
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<span>⏳</span> Generating PDF...';
+      button.disabled = true;
+
+      // Use browser's print to PDF
+      window.print();
+      
+      setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.disabled = false;
+      }, 1000);
+    }
+  </script>
 </body>
 </html>`;
   }
