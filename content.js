@@ -10,6 +10,135 @@
     version: '5.0.0',
     minTextLength: 100,
     maxContentLength: 50000
+  }
+
+  // Get theme toggle HTML
+  function getThemeToggle() {
+    return `<div class="theme-toggle">
+    <button class="theme-btn active" id="lightBtn" title="Light Theme">☀️</button>
+    <button class="theme-btn" id="darkBtn" title="Dark Theme">🌙</button>
+  </div>`;
+  }
+
+  // Get container HTML
+  function getContainer(contentHTML, stats, pageUrl) {
+    return `<div class="container">
+    <div class="header">
+      <div class="header-top">
+        <span class="icon">🧠</span>
+        <div>
+          <h1>Simplified Content</h1>
+          <div class="original-url">
+            From: <a href="${pageUrl}" target="_blank">${pageUrl}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-icon">📝</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.wordsChanged}</span>
+          <span class="stat-label">Words Simplified</span>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">📄</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.paragraphs}</span>
+          <span class="stat-label">Paragraphs</span>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">💡</span>
+        <div class="stat-info">
+          <span class="stat-value">${stats.jargonTerms}</span>
+          <span class="stat-label">Terms Explained</span>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="content-section simplified-content">
+        <h2>📚 Simplified Content</h2>
+        ${contentHTML}
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-success" id="pdfBtn">
+        <span>📥</span> Download as PDF
+      </button>
+      <button class="btn btn-primary" id="printBtn">
+        <span>🖨️</span> Print This Page
+      </button>
+      <button class="btn btn-secondary" id="closeBtn">
+        <span>❌</span> Close
+      </button>
+      <button class="btn btn-secondary" id="originalBtn" data-url="${pageUrl}">
+        <span>🔗</span> View Original
+      </button>
+    </div>
+  </div>`;
+  }
+
+  // Get JavaScript
+  function getScript(pageUrl) {
+    var scriptContent = '(function() {';
+    scriptContent += 'function setTheme(theme) {';
+    scriptContent += 'document.body.className = theme === "dark" ? "dark-theme" : "";';
+    scriptContent += 'try { localStorage.setItem("simplify-theme", theme); } catch(e) {}';
+    scriptContent += 'var btns = document.querySelectorAll(".theme-btn");';
+    scriptContent += 'btns[0].classList.toggle("active", theme === "light");';
+    scriptContent += 'btns[1].classList.toggle("active", theme === "dark");';
+    scriptContent += '}';
+    
+    scriptContent += 'function init() {';
+    scriptContent += 'var savedTheme = "light";';
+    scriptContent += 'try { savedTheme = localStorage.getItem("simplify-theme") || "light"; } catch(e) {}';
+    scriptContent += 'setTheme(savedTheme);';
+    
+    scriptContent += 'var lightBtn = document.getElementById("lightBtn");';
+    scriptContent += 'var darkBtn = document.getElementById("darkBtn");';
+    scriptContent += 'var pdfBtn = document.getElementById("pdfBtn");';
+    scriptContent += 'var printBtn = document.getElementById("printBtn");';
+    scriptContent += 'var closeBtn = document.getElementById("closeBtn");';
+    scriptContent += 'var originalBtn = document.getElementById("originalBtn");';
+    
+    scriptContent += 'if (lightBtn) { lightBtn.addEventListener("click", function() { setTheme("light"); }); }';
+    scriptContent += 'if (darkBtn) { darkBtn.addEventListener("click", function() { setTheme("dark"); }); }';
+    
+    scriptContent += 'if (pdfBtn) {';
+    scriptContent += 'pdfBtn.addEventListener("click", function() {';
+    scriptContent += 'var btn = this;';
+    scriptContent += 'var originalHTML = btn.innerHTML;';
+    scriptContent += 'btn.innerHTML = "<span>⏳</span> Generating PDF...";';
+    scriptContent += 'btn.disabled = true;';
+    scriptContent += 'window.print();';
+    scriptContent += 'setTimeout(function() {';
+    scriptContent += 'btn.innerHTML = originalHTML;';
+    scriptContent += 'btn.disabled = false;';
+    scriptContent += '}, 1000);';
+    scriptContent += '});';
+    scriptContent += '}';
+    
+    scriptContent += 'if (printBtn) { printBtn.addEventListener("click", function() { window.print(); }); }';
+    scriptContent += 'if (closeBtn) { closeBtn.addEventListener("click", function() { window.close(); }); }';
+    
+    scriptContent += 'if (originalBtn) {';
+    scriptContent += 'originalBtn.addEventListener("click", function() {';
+    scriptContent += 'var url = this.getAttribute("data-url");';
+    scriptContent += 'if (url) window.open(url, "_blank");';
+    scriptContent += '});';
+    scriptContent += '}';
+    scriptContent += '}';
+    
+    scriptContent += 'if (document.readyState === "loading") {';
+    scriptContent += 'document.addEventListener("DOMContentLoaded", init);';
+    scriptContent += '} else {';
+    scriptContent += 'init();';
+    scriptContent += '}';
+    scriptContent += '})();';
+    
+    return '<script>' + scriptContent + '</sc' + 'ript>';
   };
 
   // ===== DICTIONARIES =====
@@ -517,8 +646,8 @@
 <body>
   <!-- Theme Toggle -->
   <div class="theme-toggle">
-    <button class="theme-btn active" onclick="setTheme('light')" title="Light Theme">☀️</button>
-    <button class="theme-btn" onclick="setTheme('dark')" title="Dark Theme">🌙</button>
+    <button class="theme-btn active" title="Light Theme">☀️</button>
+    <button class="theme-btn" title="Dark Theme">🌙</button>
   </div>
 
   <div class="container">
@@ -566,16 +695,16 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-success" onclick="downloadPDF()">
+      <button class="btn btn-success">
         <span>📥</span> Download as PDF
       </button>
-      <button class="btn btn-primary" onclick="window.print()">
+      <button class="btn btn-primary">
         <span>🖨️</span> Print This Page
       </button>
-      <button class="btn btn-secondary" onclick="window.close()">
+      <button class="btn btn-secondary">
         <span>❌</span> Close
       </button>
-      <button class="btn btn-secondary" onclick="window.open('${pageUrl}', '_blank')">
+      <button class="btn btn-secondary">
         <span>🔗</span> View Original
       </button>
     </div>
@@ -672,24 +801,233 @@
     const pageTitle = document.title || 'Untitled Page';
     const pageUrl = window.location.href;
 
-    // Generate HTML
-    const html = generateSimplifiedPage(textContent, simplifiedText, stats, pageTitle, pageUrl);
+    // Open new tab with data
+    const dataUrl = createDataUrl(simplifiedText, stats, pageTitle, pageUrl);
+    const newWindow = window.open(dataUrl, '_blank');
 
-    // Open in new tab
-    const newWindow = window.open('', '_blank');
-    if (newWindow) {
-      newWindow.document.write(html);
-      newWindow.document.close();
-
-      // Update stats
-      chrome.runtime.sendMessage({
-        action: 'updateStats',
-        data: { pages: 1, words: wordsChanged }
-      });
-    } else {
+    if (!newWindow) {
       alert('Please allow pop-ups for this site to view the simplified content.');
+      return;
     }
+
+    // Update stats
+    chrome.runtime.sendMessage({
+      action: 'updateStats',
+      data: { pages: 1, words: wordsChanged }
+    });
   }
+
+  // Create data URL for new tab
+  function createDataUrl(simplifiedText, stats, pageTitle, pageUrl) {
+    const html = generateSimplifiedPageHTML(simplifiedText, stats, pageTitle, pageUrl);
+    const blob = new Blob([html], { type: 'text/html' });
+    return URL.createObjectURL(blob);
+  }
+
+  // Generate complete HTML document
+  function generateSimplifiedPageHTML(simplifiedText, stats, pageTitle, pageUrl) {
+    const contentHTML = formatParagraphs(simplifiedText);
+    
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simplified: ${pageTitle}</title>
+  ${getStyles()}
+</head>
+<body>
+  ${getThemeToggle()}
+  ${getContainer(contentHTML, stats, pageUrl)}
+  ${getScript(pageUrl)}
+</body>
+</html>`;
+  }
+
+  // Get CSS styles
+  function getStyles() {
+    return `<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+    }
+    .header-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .icon { font-size: 48px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    h1 { font-size: 28px; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .original-url { opacity: 0.9; font-size: 14px; word-break: break-all; }
+    .original-url a { color: white; text-decoration: underline; }
+    .stats {
+      display: flex;
+      gap: 30px;
+      padding: 20px 30px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-bottom: 2px solid #cbd5e1;
+    }
+    .stat { display: flex; align-items: center; gap: 10px; }
+    .stat-icon { font-size: 24px; }
+    .stat-info { display: flex; flex-direction: column; }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .content { padding: 40px; }
+    .content-section h2 {
+      font-size: 20px;
+      color: #1e293b;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid;
+      border-image: linear-gradient(90deg, #667eea, #764ba2) 1;
+    }
+    .content-section p { line-height: 1.8; margin-bottom: 15px; color: #334155; font-size: 16px; }
+    .simplified-content {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      padding: 30px;
+      border-radius: 12px;
+      border-left: 5px solid #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    .jargon-term {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 6px;
+      cursor: help;
+      font-weight: 600;
+      position: relative;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+    }
+    .jargon-term:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4); }
+    .jargon-term:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      white-space: normal;
+      width: 250px;
+      margin-bottom: 5px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-weight: normal;
+    }
+    .actions {
+      padding: 30px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      border-top: 2px solid #cbd5e1;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .btn-secondary { background: white; color: #667eea; border: 2px solid #667eea; }
+    .btn-secondary:hover { background: #667eea; color: white; }
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .theme-btn {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+    }
+    .theme-btn:hover { opacity: 1; transform: scale(1.1); }
+    .theme-btn.active { opacity: 1; background: rgba(255, 255, 255, 0.3); }
+    body.dark-theme { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    body.dark-theme .container { background: #1e293b; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); }
+    body.dark-theme .header { background: linear-gradient(135deg, #334155, #1e293b); }
+    body.dark-theme .stats { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); border-bottom-color: #475569; }
+    body.dark-theme .stat-label { color: #94a3b8; }
+    body.dark-theme .content-section h2 { color: #f1f5f9; }
+    body.dark-theme .content-section p { color: #cbd5e1; }
+    body.dark-theme .simplified-content {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+      border-left-color: #60a5fa;
+    }
+    body.dark-theme .actions { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); border-top-color: #475569; }
+    @media (max-width: 768px) {
+      .container { border-radius: 0; }
+      .stats { flex-direction: column; gap: 15px; }
+      .content { padding: 20px; }
+      .actions { flex-direction: column; }
+      .theme-toggle { top: 10px; right: 10px; padding: 8px 15px; }
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .header, .actions, .stats, .theme-toggle { display: none; }
+      .container { box-shadow: none; max-width: 100%; border-radius: 0; }
+      .simplified-content { border-left: 3px solid #3b82f6; }
+      .jargon-term { background: #fbbf24; color: #1e293b; padding: 1px 4px; }
+      .jargon-term::after {
+        content: " (" attr(title) ")";
+        background: none;
+        color: #64748b;
+        position: static;
+        font-style: italic;
+      }
+    }
+  </style>`;
 
   // Handle full page simplification
   function simplifyFullPage() {
