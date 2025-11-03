@@ -82,63 +82,65 @@
 
   // Get JavaScript
   function getScript(pageUrl) {
-    var scriptContent = '(function() {';
-    scriptContent += 'function setTheme(theme) {';
-    scriptContent += 'document.body.className = theme === "dark" ? "dark-theme" : "";';
-    scriptContent += 'try { localStorage.setItem("simplify-theme", theme); } catch(e) {}';
-    scriptContent += 'var btns = document.querySelectorAll(".theme-btn");';
-    scriptContent += 'btns[0].classList.toggle("active", theme === "light");';
-    scriptContent += 'btns[1].classList.toggle("active", theme === "dark");';
-    scriptContent += '}';
+    var s = [];
+    s.push('(function() {');
+    s.push('  function setTheme(theme) {');
+    s.push('    document.body.className = theme === "dark" ? "dark-theme" : "";');
+    s.push('    try { localStorage.setItem("simplify-theme", theme); } catch(e) {}');
+    s.push('    var btns = document.querySelectorAll(".theme-btn");');
+    s.push('    btns[0].classList.toggle("active", theme === "light");');
+    s.push('    btns[1].classList.toggle("active", theme === "dark");');
+    s.push('  }');
+    s.push('  function init() {');
+    s.push('    var savedTheme = "light";');
+    s.push('    try { savedTheme = localStorage.getItem("simplify-theme") || "light"; } catch(e) {}');
+    s.push('    setTheme(savedTheme);');
+    s.push('    var lightBtn = document.getElementById("lightBtn");');
+    s.push('    var darkBtn = document.getElementById("darkBtn");');
+    s.push('    var pdfBtn = document.getElementById("pdfBtn");');
+    s.push('    var printBtn = document.getElementById("printBtn");');
+    s.push('    var closeBtn = document.getElementById("closeBtn");');
+    s.push('    var originalBtn = document.getElementById("originalBtn");');
+    s.push('    if (lightBtn) {');
+    s.push('      lightBtn.addEventListener("click", function() { setTheme("light"); });');
+    s.push('    }');
+    s.push('    if (darkBtn) {');
+    s.push('      darkBtn.addEventListener("click", function() { setTheme("dark"); });');
+    s.push('    }');
+    s.push('    if (pdfBtn) {');
+    s.push('      pdfBtn.addEventListener("click", function() {');
+    s.push('        var btn = this;');
+    s.push('        var originalHTML = btn.innerHTML;');
+    s.push('        btn.innerHTML = "<span>⏳</span> Generating PDF...";');
+    s.push('        btn.disabled = true;');
+    s.push('        window.print();');
+    s.push('        setTimeout(function() {');
+    s.push('          btn.innerHTML = originalHTML;');
+    s.push('          btn.disabled = false;');
+    s.push('        }, 1000);');
+    s.push('      });');
+    s.push('    }');
+    s.push('    if (printBtn) {');
+    s.push('      printBtn.addEventListener("click", function() { window.print(); });');
+    s.push('    }');
+    s.push('    if (closeBtn) {');
+    s.push('      closeBtn.addEventListener("click", function() { window.close(); });');
+    s.push('    }');
+    s.push('    if (originalBtn) {');
+    s.push('      originalBtn.addEventListener("click", function() {');
+    s.push('        var url = this.getAttribute("data-url");');
+    s.push('        if (url) { window.open(url, "_blank"); }');
+    s.push('      });');
+    s.push('    }');
+    s.push('  }');
+    s.push('  if (document.readyState === "loading") {');
+    s.push('    document.addEventListener("DOMContentLoaded", init);');
+    s.push('  } else {');
+    s.push('    init();');
+    s.push('  }');
+    s.push('})();');
     
-    scriptContent += 'function init() {';
-    scriptContent += 'var savedTheme = "light";';
-    scriptContent += 'try { savedTheme = localStorage.getItem("simplify-theme") || "light"; } catch(e) {}';
-    scriptContent += 'setTheme(savedTheme);';
-    
-    scriptContent += 'var lightBtn = document.getElementById("lightBtn");';
-    scriptContent += 'var darkBtn = document.getElementById("darkBtn");';
-    scriptContent += 'var pdfBtn = document.getElementById("pdfBtn");';
-    scriptContent += 'var printBtn = document.getElementById("printBtn");';
-    scriptContent += 'var closeBtn = document.getElementById("closeBtn");';
-    scriptContent += 'var originalBtn = document.getElementById("originalBtn");';
-    
-    scriptContent += 'if (lightBtn) { lightBtn.addEventListener("click", function() { setTheme("light"); }); }';
-    scriptContent += 'if (darkBtn) { darkBtn.addEventListener("click", function() { setTheme("dark"); }); }';
-    
-    scriptContent += 'if (pdfBtn) {';
-    scriptContent += 'pdfBtn.addEventListener("click", function() {';
-    scriptContent += 'var btn = this;';
-    scriptContent += 'var originalHTML = btn.innerHTML;';
-    scriptContent += 'btn.innerHTML = "<span>⏳</span> Generating PDF...";';
-    scriptContent += 'btn.disabled = true;';
-    scriptContent += 'window.print();';
-    scriptContent += 'setTimeout(function() {';
-    scriptContent += 'btn.innerHTML = originalHTML;';
-    scriptContent += 'btn.disabled = false;';
-    scriptContent += '}, 1000);';
-    scriptContent += '});';
-    scriptContent += '}';
-    
-    scriptContent += 'if (printBtn) { printBtn.addEventListener("click", function() { window.print(); }); }';
-    scriptContent += 'if (closeBtn) { closeBtn.addEventListener("click", function() { window.close(); }); }';
-    
-    scriptContent += 'if (originalBtn) {';
-    scriptContent += 'originalBtn.addEventListener("click", function() {';
-    scriptContent += 'var url = this.getAttribute("data-url");';
-    scriptContent += 'if (url) window.open(url, "_blank");';
-    scriptContent += '});';
-    scriptContent += '}';
-    scriptContent += '}';
-    
-    scriptContent += 'if (document.readyState === "loading") {';
-    scriptContent += 'document.addEventListener("DOMContentLoaded", init);';
-    scriptContent += '} else {';
-    scriptContent += 'init();';
-    scriptContent += '}';
-    scriptContent += '})();';
-    
-    return '<script>' + scriptContent + '</sc' + 'ript>';
+    return '<script>' + s.join('\n') + '</sc' + 'ript>';
   };
 
   // ===== DICTIONARIES =====
