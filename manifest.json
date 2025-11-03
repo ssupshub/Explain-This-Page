@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Explain This Page - AI Simplifier",
   "version": "5.0.0",
-  "description": "Transform complex webpages into simple, easy-to-understand content. Opens in new tab - no pop-up issues! Select text or simplify entire pages.",
+  "description": "Transform complex webpages into simple, easy-to-understand content.",
   "permissions": [
     "scripting",
     "activeTab", 
