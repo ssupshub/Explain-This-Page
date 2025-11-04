@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Explain This Page - AI Simplifier",
-  "version": "5.0.0",
-  "description": "Transform complex webpages into simple, easy-to-understand content.",
+  "version": "5.1.0",
+  "description": "Transform complex webpages into simple, easy-to-understand content. Opens in new tab with PDF download and dark mode!",
   "permissions": [
     "scripting",
     "activeTab", 
