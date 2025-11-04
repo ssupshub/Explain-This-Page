@@ -362,9 +362,6 @@ A: Yes! Select the text and right-click → "Simplify selected text"
 **Q: How much content can it process?**
 A: Up to 50,000 characters (about 8,000 words).
 
-**Q: Does it work offline?**
-A: Yes! Everything runs locally in your browser.
-
 **Q: Will it slow down my browser?**
 A: No, it only runs when you activate it.
 
