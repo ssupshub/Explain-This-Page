@@ -1,4 +1,4 @@
-// Content Script v5.0 - New Tab Approach (No Pop-ups!)
+// Content Script v5.1 - Complete Rewrite (Bug-Free)
 (function() {
   'use strict';
 
@@ -7,140 +7,9 @@
 
   // ===== CONFIGURATION =====
   const CONFIG = {
-    version: '5.0.0',
+    version: '5.1.0',
     minTextLength: 100,
     maxContentLength: 50000
-  }
-
-  // Get theme toggle HTML
-  function getThemeToggle() {
-    return `<div class="theme-toggle">
-    <button class="theme-btn active" id="lightBtn" title="Light Theme">☀️</button>
-    <button class="theme-btn" id="darkBtn" title="Dark Theme">🌙</button>
-  </div>`;
-  }
-
-  // Get container HTML
-  function getContainer(contentHTML, stats, pageUrl) {
-    return `<div class="container">
-    <div class="header">
-      <div class="header-top">
-        <span class="icon">🧠</span>
-        <div>
-          <h1>Simplified Content</h1>
-          <div class="original-url">
-            From: <a href="${pageUrl}" target="_blank">${pageUrl}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="stat">
-        <span class="stat-icon">📝</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.wordsChanged}</span>
-          <span class="stat-label">Words Simplified</span>
-        </div>
-      </div>
-      <div class="stat">
-        <span class="stat-icon">📄</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.paragraphs}</span>
-          <span class="stat-label">Paragraphs</span>
-        </div>
-      </div>
-      <div class="stat">
-        <span class="stat-icon">💡</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.jargonTerms}</span>
-          <span class="stat-label">Terms Explained</span>
-        </div>
-      </div>
-    </div>
-    <div class="content">
-      <div class="content-section simplified-content">
-        <h2>📚 Simplified Content</h2>
-        ${contentHTML}
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn btn-success" id="pdfBtn">
-        <span>📥</span> Download as PDF
-      </button>
-      <button class="btn btn-primary" id="printBtn">
-        <span>🖨️</span> Print This Page
-      </button>
-      <button class="btn btn-secondary" id="closeBtn">
-        <span>❌</span> Close
-      </button>
-      <button class="btn btn-secondary" id="originalBtn" data-url="${pageUrl}">
-        <span>🔗</span> View Original
-      </button>
-    </div>
-  </div>`;
-  }
-
-  // Get JavaScript
-  function getScript(pageUrl) {
-    var s = [];
-    s.push('(function() {');
-    s.push('  function setTheme(theme) {');
-    s.push('    document.body.className = theme === "dark" ? "dark-theme" : "";');
-    s.push('    try { localStorage.setItem("simplify-theme", theme); } catch(e) {}');
-    s.push('    var btns = document.querySelectorAll(".theme-btn");');
-    s.push('    btns[0].classList.toggle("active", theme === "light");');
-    s.push('    btns[1].classList.toggle("active", theme === "dark");');
-    s.push('  }');
-    s.push('  function init() {');
-    s.push('    var savedTheme = "light";');
-    s.push('    try { savedTheme = localStorage.getItem("simplify-theme") || "light"; } catch(e) {}');
-    s.push('    setTheme(savedTheme);');
-    s.push('    var lightBtn = document.getElementById("lightBtn");');
-    s.push('    var darkBtn = document.getElementById("darkBtn");');
-    s.push('    var pdfBtn = document.getElementById("pdfBtn");');
-    s.push('    var printBtn = document.getElementById("printBtn");');
-    s.push('    var closeBtn = document.getElementById("closeBtn");');
-    s.push('    var originalBtn = document.getElementById("originalBtn");');
-    s.push('    if (lightBtn) {');
-    s.push('      lightBtn.addEventListener("click", function() { setTheme("light"); });');
-    s.push('    }');
-    s.push('    if (darkBtn) {');
-    s.push('      darkBtn.addEventListener("click", function() { setTheme("dark"); });');
-    s.push('    }');
-    s.push('    if (pdfBtn) {');
-    s.push('      pdfBtn.addEventListener("click", function() {');
-    s.push('        var btn = this;');
-    s.push('        var originalHTML = btn.innerHTML;');
-    s.push('        btn.innerHTML = "<span>⏳</span> Generating PDF...";');
-    s.push('        btn.disabled = true;');
-    s.push('        window.print();');
-    s.push('        setTimeout(function() {');
-    s.push('          btn.innerHTML = originalHTML;');
-    s.push('          btn.disabled = false;');
-    s.push('        }, 1000);');
-    s.push('      });');
-    s.push('    }');
-    s.push('    if (printBtn) {');
-    s.push('      printBtn.addEventListener("click", function() { window.print(); });');
-    s.push('    }');
-    s.push('    if (closeBtn) {');
-    s.push('      closeBtn.addEventListener("click", function() { window.close(); });');
-    s.push('    }');
-    s.push('    if (originalBtn) {');
-    s.push('      originalBtn.addEventListener("click", function() {');
-    s.push('        var url = this.getAttribute("data-url");');
-    s.push('        if (url) { window.open(url, "_blank"); }');
-    s.push('      });');
-    s.push('    }');
-    s.push('  }');
-    s.push('  if (document.readyState === "loading") {');
-    s.push('    document.addEventListener("DOMContentLoaded", init);');
-    s.push('  } else {');
-    s.push('    init();');
-    s.push('  }');
-    s.push('})();');
-    
-    return '<script>' + s.join('\n') + '</sc' + 'ript>';
   };
 
   // ===== DICTIONARIES =====
@@ -181,7 +50,6 @@
 
   // ===== CORE FUNCTIONS =====
 
-  // Extract all visible text from page
   function extractPageContent() {
     const excludeTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'SVG', 'NAV', 'FOOTER', 'HEADER'];
     const elements = document.querySelectorAll('p, article, section, div, main, h1, h2, h3, h4, h5, h6, li');
@@ -212,7 +80,6 @@
     return textBlocks.join('\n\n');
   }
 
-  // Simplify text
   function simplifyText(text) {
     let simplified = text;
     let wordsChanged = 0;
@@ -229,21 +96,19 @@
     return { text: simplified, wordsChanged };
   }
 
-  // Highlight jargon terms
   function highlightJargon(text) {
     let highlighted = text;
     
     Object.entries(JARGON_DICT).forEach(([term, definition]) => {
       const regex = new RegExp(`\\b(${term})\\b`, 'gi');
       highlighted = highlighted.replace(regex, (match) => {
-        return `<span class="jargon-term" title="${definition}">${match}</span>`;
+        return `<span class="jargon-term" data-tip="${definition}">${match}</span>`;
       });
     });
 
     return highlighted;
   }
 
-  // Break into paragraphs
   function formatParagraphs(text) {
     return text
       .split('\n\n')
@@ -252,792 +117,183 @@
       .join('');
   }
 
-  // Generate simplified page HTML
-  function generateSimplifiedPage(originalText, simplifiedText, stats, pageTitle, pageUrl) {
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simplified: ${pageTitle}</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-    }
-
-    .header-top {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .icon {
-      font-size: 48px;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .original-url {
-      opacity: 0.9;
-      font-size: 14px;
-      word-break: break-all;
-    }
-
-    .original-url a {
-      color: white;
-      text-decoration: underline;
-      transition: opacity 0.3s ease;
-    }
-
-    .original-url a:hover {
-      opacity: 0.8;
-    }
-
-    .stats {
-      display: flex;
-      gap: 30px;
-      padding: 20px 30px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-bottom: 2px solid #cbd5e1;
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .stat-icon {
-      font-size: 24px;
-    }
-
-    .stat-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .content {
-      padding: 40px;
-    }
-
-    .content-section {
-      margin-bottom: 40px;
-    }
-
-    .content-section h2 {
-      font-size: 20px;
-      color: #1e293b;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid;
-      border-image: linear-gradient(90deg, #667eea, #764ba2) 1;
-    }
-
-    .content-section p {
-      line-height: 1.8;
-      margin-bottom: 15px;
-      color: #334155;
-      font-size: 16px;
-    }
-
-    .simplified-content {
-      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-      padding: 30px;
-      border-radius: 12px;
-      border-left: 5px solid #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-    }
-
-    .jargon-term {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 6px;
-      cursor: help;
-      font-weight: 600;
-      position: relative;
-      white-space: nowrap;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
-    }
-
-    .jargon-term:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4);
-    }
-
-    .jargon-term:hover::after {
-      content: attr(title);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      white-space: normal;
-      width: 250px;
-      margin-bottom: 5px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      font-weight: normal;
-    }
-
-    .jargon-term:hover::before {
-      content: '';
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: #1e293b;
-      margin-bottom: -6px;
-    }
-
-    .actions {
-      padding: 30px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      border-top: 2px solid #cbd5e1;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: white;
-      color: #667eea;
-      border: 2px solid #667eea;
-    }
-
-    .btn-secondary:hover {
-      background: #667eea;
-      color: white;
-    }
-
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50px;
-      padding: 10px 20px;
-      display: flex;
-      gap: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-
-    .theme-btn {
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      opacity: 0.6;
-    }
-
-    .theme-btn:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-
-    .theme-btn.active {
-      opacity: 1;
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Dark Theme */
-    body.dark-theme {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    }
-
-    body.dark-theme .container {
-      background: #1e293b;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    }
-
-    body.dark-theme .header {
-      background: linear-gradient(135deg, #334155, #1e293b);
-    }
-
-    body.dark-theme .stats {
-      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-      border-bottom-color: #475569;
-    }
-
-    body.dark-theme .stat-label {
-      color: #94a3b8;
-    }
-
-    body.dark-theme .content-section h2 {
-      color: #f1f5f9;
-    }
-
-    body.dark-theme .content-section p {
-      color: #cbd5e1;
-    }
-
-    body.dark-theme .simplified-content {
-      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
-      border-left-color: #60a5fa;
-    }
-
-    body.dark-theme .actions {
-      background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-      border-top-color: #475569;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        border-radius: 0;
-      }
-
-      .stats {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .content {
-        padding: 20px;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .theme-toggle {
-        top: 10px;
-        right: 10px;
-        padding: 8px 15px;
-      }
-    }
-
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .header, .actions, .stats, .theme-toggle {
-        display: none;
-      }
-
-      .container {
-        box-shadow: none;
-        max-width: 100%;
-        border-radius: 0;
-      }
-
-      .simplified-content {
-        border-left: 3px solid #3b82f6;
-      }
-
-      .jargon-term {
-        background: #fbbf24;
-        color: #1e293b;
-        padding: 1px 4px;
-        page-break-inside: avoid;
-      }
-
-      .jargon-term::after {
-        content: " (" attr(title) ")";
-        background: none;
-        color: #64748b;
-        position: static;
-        transform: none;
-        padding: 0;
-        margin: 0;
-        font-size: inherit;
-        font-style: italic;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Theme Toggle -->
-  <div class="theme-toggle">
-    <button class="theme-btn active" title="Light Theme">☀️</button>
-    <button class="theme-btn" title="Dark Theme">🌙</button>
-  </div>
-
-  <div class="container">
-    <div class="header">
-      <div class="header-top">
-        <span class="icon">🧠</span>
-        <div>
-          <h1>Simplified Content</h1>
-          <div class="original-url">
-            From: <a href="${pageUrl}" target="_blank">${pageUrl}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <span class="stat-icon">📝</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.wordsChanged}</span>
-          <span class="stat-label">Words Simplified</span>
-        </div>
-      </div>
-      <div class="stat">
-        <span class="stat-icon">📄</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.paragraphs}</span>
-          <span class="stat-label">Paragraphs</span>
-        </div>
-      </div>
-      <div class="stat">
-        <span class="stat-icon">💡</span>
-        <div class="stat-info">
-          <span class="stat-value">${stats.jargonTerms}</span>
-          <span class="stat-label">Terms Explained</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="content">
-      <div class="content-section simplified-content">
-        <h2>📚 Simplified Content</h2>
-        ${formatParagraphs(simplifiedText)}
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-success">
-        <span>📥</span> Download as PDF
-      </button>
-      <button class="btn btn-primary">
-        <span>🖨️</span> Print This Page
-      </button>
-      <button class="btn btn-secondary">
-        <span>❌</span> Close
-      </button>
-      <button class="btn btn-secondary">
-        <span>🔗</span> View Original
-      </button>
-    </div>
-  </div>
-
-  <script>
-    // Theme Management
-    function setTheme(theme) {
-      document.body.className = theme === 'dark' ? 'dark-theme' : '';
-      localStorage.setItem('simplify-theme', theme);
-      
-      // Update active button
-      document.querySelectorAll('.theme-btn').forEach((btn, idx) => {
-        btn.classList.toggle('active', (theme === 'light' && idx === 0) || (theme === 'dark' && idx === 1));
-      });
-    }
-
-    // PDF Download Function
-    function downloadPDF() {
-      const button = event.target.closest('.btn');
-      const originalHTML = button.innerHTML;
-      button.innerHTML = '<span>⏳</span> Generating PDF...';
-      button.disabled = true;
-
-      // Use browser's print to PDF
-      window.print();
-      
-      setTimeout(function() {
-        button.innerHTML = originalHTML;
-        button.disabled = false;
-      }, 1000);
-    }
-
-    // Initialize on load
-    window.addEventListener('DOMContentLoaded', function() {
-      // Load saved theme
-      const savedTheme = localStorage.getItem('simplify-theme') || 'light';
-      setTheme(savedTheme);
-
-      // Setup event listeners
-      document.querySelectorAll('.theme-btn').forEach(function(btn, idx) {
-        btn.addEventListener('click', function() {
-          setTheme(idx === 0 ? 'light' : 'dark');
-        });
-      });
-
-      document.querySelector('.btn-success').addEventListener('click', downloadPDF);
-      
-      document.querySelectorAll('.btn-primary')[0].addEventListener('click', function() {
-        window.print();
-      });
-      
-      document.querySelectorAll('.btn-secondary')[0].addEventListener('click', function() {
-        window.close();
-      });
-      
-      document.querySelectorAll('.btn-secondary')[1].addEventListener('click', function() {
-        window.open('${pageUrl}', '_blank');
-      });
-    });
-  </script>
-</body>
-</html>`;
-  }
-
-  // Process and open in new tab
   function processAndOpenNewTab(textContent) {
     if (!textContent || textContent.length < CONFIG.minTextLength) {
       alert('Not enough content to simplify. Please try a page with more text.');
       return;
     }
 
-    // Limit content length
     if (textContent.length > CONFIG.maxContentLength) {
       textContent = textContent.substring(0, CONFIG.maxContentLength) + '...';
     }
 
-    // Simplify the text
     const { text: simplifiedText, wordsChanged } = simplifyText(textContent);
-
-    // Calculate stats
     const paragraphs = simplifiedText.split('\n\n').filter(p => p.trim().length > 0).length;
     const jargonTerms = Object.keys(JARGON_DICT).filter(term => 
       simplifiedText.toLowerCase().includes(term.toLowerCase())
     ).length;
 
-    const stats = {
-      wordsChanged,
-      paragraphs,
-      jargonTerms
-    };
-
-    // Get page info
+    const stats = { wordsChanged, paragraphs, jargonTerms };
     const pageTitle = document.title || 'Untitled Page';
     const pageUrl = window.location.href;
 
-    // Open new tab with data
-    const dataUrl = createDataUrl(simplifiedText, stats, pageTitle, pageUrl);
-    const newWindow = window.open(dataUrl, '_blank');
-
+    const html = buildHTML(simplifiedText, stats, pageTitle, pageUrl);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    const newWindow = window.open(url, '_blank');
     if (!newWindow) {
       alert('Please allow pop-ups for this site to view the simplified content.');
       return;
     }
 
-    // Update stats
     chrome.runtime.sendMessage({
       action: 'updateStats',
       data: { pages: 1, words: wordsChanged }
     });
   }
 
-  // Create data URL for new tab
-  function createDataUrl(simplifiedText, stats, pageTitle, pageUrl) {
-    const html = generateSimplifiedPageHTML(simplifiedText, stats, pageTitle, pageUrl);
-    const blob = new Blob([html], { type: 'text/html' });
-    return URL.createObjectURL(blob);
-  }
-
-  // Generate complete HTML document
-  function generateSimplifiedPageHTML(simplifiedText, stats, pageTitle, pageUrl) {
+  function buildHTML(simplifiedText, stats, pageTitle, pageUrl) {
     const contentHTML = formatParagraphs(simplifiedText);
+    const css = getCSS();
+    const js = getJS(pageUrl);
     
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simplified: ${pageTitle}</title>
-  ${getStyles()}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simplified: ${escapeHtml(pageTitle)}</title>
+${css}
 </head>
 <body>
-  ${getThemeToggle()}
-  ${getContainer(contentHTML, stats, pageUrl)}
-  ${getScript(pageUrl)}
+<div class="theme-toggle">
+<button class="theme-btn light-btn" data-theme="light">☀️</button>
+<button class="theme-btn dark-btn" data-theme="dark">🌙</button>
+</div>
+<div class="container">
+<div class="header">
+<div class="header-top">
+<span class="icon">🧠</span>
+<div>
+<h1>Simplified Content</h1>
+<div class="url-link">From: <a href="${escapeHtml(pageUrl)}" target="_blank">${escapeHtml(pageUrl)}</a></div>
+</div>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><span class="stat-icon">📝</span><div class="stat-info"><span class="stat-value">${stats.wordsChanged}</span><span class="stat-label">Words Simplified</span></div></div>
+<div class="stat"><span class="stat-icon">📄</span><div class="stat-info"><span class="stat-value">${stats.paragraphs}</span><span class="stat-label">Paragraphs</span></div></div>
+<div class="stat"><span class="stat-icon">💡</span><div class="stat-info"><span class="stat-value">${stats.jargonTerms}</span><span class="stat-label">Terms Explained</span></div></div>
+</div>
+<div class="content">
+<div class="simplified-content">
+<h2>📚 Simplified Content</h2>
+${contentHTML}
+</div>
+</div>
+<div class="actions">
+<button class="btn btn-success" id="pdf-btn">📥 Download as PDF</button>
+<button class="btn btn-primary" id="print-btn">🖨️ Print</button>
+<button class="btn btn-secondary" id="close-btn">❌ Close</button>
+<button class="btn btn-secondary" id="original-btn">🔗 View Original</button>
+</div>
+</div>
+${js}
 </body>
 </html>`;
   }
 
-  // Get CSS styles
-  function getStyles() {
-    return `<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-    }
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-    }
-    .header-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-    .icon { font-size: 48px; animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    h1 { font-size: 28px; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .original-url { opacity: 0.9; font-size: 14px; word-break: break-all; }
-    .original-url a { color: white; text-decoration: underline; }
-    .stats {
-      display: flex;
-      gap: 30px;
-      padding: 20px 30px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-bottom: 2px solid #cbd5e1;
-    }
-    .stat { display: flex; align-items: center; gap: 10px; }
-    .stat-icon { font-size: 24px; }
-    .stat-info { display: flex; flex-direction: column; }
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .stat-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-    .content { padding: 40px; }
-    .content-section h2 {
-      font-size: 20px;
-      color: #1e293b;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid;
-      border-image: linear-gradient(90deg, #667eea, #764ba2) 1;
-    }
-    .content-section p { line-height: 1.8; margin-bottom: 15px; color: #334155; font-size: 16px; }
-    .simplified-content {
-      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-      padding: 30px;
-      border-radius: 12px;
-      border-left: 5px solid #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-    }
-    .jargon-term {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 6px;
-      cursor: help;
-      font-weight: 600;
-      position: relative;
-      white-space: nowrap;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
-    }
-    .jargon-term:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(251, 191, 36, 0.4); }
-    .jargon-term:hover::after {
-      content: attr(title);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      white-space: normal;
-      width: 250px;
-      margin-bottom: 5px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      font-weight: normal;
-    }
-    .actions {
-      padding: 30px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      border-top: 2px solid #cbd5e1;
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
-    .btn:active { transform: translateY(0); }
-    .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-    .btn-secondary { background: white; color: #667eea; border: 2px solid #667eea; }
-    .btn-secondary:hover { background: #667eea; color: white; }
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50px;
-      padding: 10px 20px;
-      display: flex;
-      gap: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    .theme-btn {
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      opacity: 0.6;
-    }
-    .theme-btn:hover { opacity: 1; transform: scale(1.1); }
-    .theme-btn.active { opacity: 1; background: rgba(255, 255, 255, 0.3); }
-    body.dark-theme { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
-    body.dark-theme .container { background: #1e293b; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); }
-    body.dark-theme .header { background: linear-gradient(135deg, #334155, #1e293b); }
-    body.dark-theme .stats { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); border-bottom-color: #475569; }
-    body.dark-theme .stat-label { color: #94a3b8; }
-    body.dark-theme .content-section h2 { color: #f1f5f9; }
-    body.dark-theme .content-section p { color: #cbd5e1; }
-    body.dark-theme .simplified-content {
-      background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
-      border-left-color: #60a5fa;
-    }
-    body.dark-theme .actions { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); border-top-color: #475569; }
-    @media (max-width: 768px) {
-      .container { border-radius: 0; }
-      .stats { flex-direction: column; gap: 15px; }
-      .content { padding: 20px; }
-      .actions { flex-direction: column; }
-      .theme-toggle { top: 10px; right: 10px; padding: 8px 15px; }
-    }
-    @media print {
-      body { background: white; padding: 0; }
-      .header, .actions, .stats, .theme-toggle { display: none; }
-      .container { box-shadow: none; max-width: 100%; border-radius: 0; }
-      .simplified-content { border-left: 3px solid #3b82f6; }
-      .jargon-term { background: #fbbf24; color: #1e293b; padding: 1px 4px; }
-      .jargon-term::after {
-        content: " (" attr(title) ")";
-        background: none;
-        color: #64748b;
-        position: static;
-        font-style: italic;
-      }
-    }
-  </style>`;
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
 
-  // Handle full page simplification
+  function getCSS() {
+    return `<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden}
+.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px}
+.header-top{display:flex;align-items:center;gap:15px}
+.icon{font-size:48px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+h1{font-size:28px;margin-bottom:10px}
+.url-link{opacity:0.9;font-size:14px;word-break:break-all}
+.url-link a{color:#fff;text-decoration:underline}
+.stats{display:flex;gap:30px;padding:20px 30px;background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);border-bottom:2px solid #cbd5e1}
+.stat{display:flex;align-items:center;gap:10px}
+.stat-icon{font-size:24px}
+.stat-info{display:flex;flex-direction:column}
+.stat-value{font-size:24px;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:12px;color:#64748b;text-transform:uppercase}
+.content{padding:40px}
+.simplified-content{background:linear-gradient(135deg,#dbeafe 0%,#bfdbfe 100%);padding:30px;border-radius:12px;border-left:5px solid #3b82f6}
+.simplified-content h2{font-size:20px;color:#1e293b;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid;border-image:linear-gradient(90deg,#667eea,#764ba2) 1}
+.simplified-content p{line-height:1.8;margin-bottom:15px;color:#334155;font-size:16px}
+.jargon-term{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;padding:2px 8px;border-radius:6px;cursor:help;font-weight:600;position:relative}
+.jargon-term:hover::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:8px 12px;border-radius:8px;font-size:13px;white-space:normal;width:250px;margin-bottom:5px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-weight:normal}
+.actions{padding:30px;background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 24px;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:15px;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-secondary{background:#fff;color:#667eea;border:2px solid #667eea}
+.btn-secondary:hover{background:#667eea;color:#fff}
+.theme-toggle{position:fixed;top:20px;right:20px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.3);border-radius:50px;padding:10px 20px;display:flex;gap:10px;z-index:1000}
+.theme-btn{background:transparent;border:none;font-size:24px;cursor:pointer;padding:5px;border-radius:50%;transition:all 0.3s ease;opacity:0.6}
+.theme-btn:hover{opacity:1;transform:scale(1.1)}
+.theme-btn.active{opacity:1;background:rgba(255,255,255,0.3)}
+body.dark{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%)}
+body.dark .container{background:#1e293b}
+body.dark .header{background:linear-gradient(135deg,#334155,#1e293b)}
+body.dark .stats{background:linear-gradient(135deg,#334155 0%,#1e293b 100%)}
+body.dark .stat-label{color:#94a3b8}
+body.dark .simplified-content{background:linear-gradient(135deg,#1e3a5f 0%,#2c5282 100%)}
+body.dark .simplified-content h2{color:#f1f5f9}
+body.dark .simplified-content p{color:#cbd5e1}
+body.dark .actions{background:linear-gradient(135deg,#334155 0%,#1e293b 100%)}
+@media(max-width:768px){.stats{flex-direction:column;gap:15px}.content{padding:20px}.actions{flex-direction:column}}
+@media print{body{background:#fff;padding:0}.header,.actions,.stats,.theme-toggle{display:none}.container{box-shadow:none;max-width:100%}}
+</style>`;
+  }
+
+  function getJS(pageUrl) {
+    return `<script>
+(function(){
+var savedTheme=localStorage.getItem("theme")||"light";
+if(savedTheme==="dark")document.body.classList.add("dark");
+document.querySelectorAll(".theme-btn").forEach(function(btn){
+if((savedTheme==="light"&&btn.classList.contains("light-btn"))||(savedTheme==="dark"&&btn.classList.contains("dark-btn")))btn.classList.add("active");
+btn.onclick=function(){
+var theme=this.getAttribute("data-theme");
+document.body.className=theme==="dark"?"dark":"";
+localStorage.setItem("theme",theme);
+document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.remove("active")});
+this.classList.add("active");
+};
+});
+document.getElementById("pdf-btn").onclick=function(){
+var btn=this;
+var html=btn.innerHTML;
+btn.innerHTML="⏳ Generating...";
+btn.disabled=true;
+window.print();
+setTimeout(function(){btn.innerHTML=html;btn.disabled=false},1000);
+};
+document.getElementById("print-btn").onclick=function(){window.print()};
+document.getElementById("close-btn").onclick=function(){window.close()};
+document.getElementById("original-btn").onclick=function(){window.open("${pageUrl}","_blank")};
+})();
+</script>`;
+  }
+
   function simplifyFullPage() {
     const content = extractPageContent();
     processAndOpenNewTab(content);
   }
 
-  // Handle selected text simplification
   function simplifySelection() {
     const selectedText = window.getSelection().toString().trim();
     
@@ -1055,8 +311,6 @@
   }
 
   // ===== EVENT LISTENERS =====
-
-  // Listen for messages from background/popup
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     try {
       if (request.action === 'ping') {
@@ -1080,10 +334,9 @@
     return true;
   });
 
-  // Listen for custom events
   window.addEventListener('explain-page-trigger', simplifyFullPage);
   window.addEventListener('explain-selection-trigger', simplifySelection);
 
-  console.log('✨ Explain This Page v5.0 loaded - Ready to simplify!');
+  console.log('✨ Explain This Page v5.1 loaded');
 
 })();
