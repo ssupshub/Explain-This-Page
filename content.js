@@ -80,7 +80,62 @@
     return textBlocks.join('\n\n');
   }
 
-  function simplifyText(text) {
+  // ===== AI SIMPLIFICATION =====
+  
+  async function simplifyWithAI(text) {
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4096,
+          messages: [{
+            role: 'user',
+            content: `You are a text simplification assistant. Simplify the following text to make it easy to understand for a middle school student (ages 11-13). Follow these rules:
+
+1. Use simple, common words (replace complex words with everyday alternatives)
+2. Break long sentences into shorter ones (max 15-20 words per sentence)
+3. Explain jargon and technical terms in parentheses when first used
+4. Keep the same meaning and all important information
+5. Use active voice instead of passive voice
+6. Remove unnecessary complexity while staying accurate
+7. Maintain a friendly, conversational tone
+
+Text to simplify:
+${text}
+
+Return ONLY the simplified text, nothing else.`
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('AI simplification failed');
+      }
+
+      const data = await response.json();
+      
+      if (data.content && data.content[0] && data.content[0].text) {
+        return {
+          text: data.content[0].text,
+          wordsChanged: Math.floor(text.split(' ').length * 0.3), // Estimate
+          isAI: true
+        };
+      } else {
+        throw new Error('Invalid AI response');
+      }
+    } catch (error) {
+      console.error('AI simplification error:', error);
+      // Fallback to dictionary method
+      return simplifyWithDictionary(text);
+    }
+  }
+
+  function simplifyWithDictionary(text) {
     let simplified = text;
     let wordsChanged = 0;
 
@@ -93,7 +148,7 @@
       }
     });
 
-    return { text: simplified, wordsChanged };
+    return { text: simplified, wordsChanged, isAI: false };
   }
 
   function highlightJargon(text) {
