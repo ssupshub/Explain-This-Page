@@ -172,40 +172,85 @@ Return ONLY the simplified text, nothing else.`
       .join('');
   }
 
-  function processAndOpenNewTab(textContent) {
+  async function processAndOpenNewTab(textContent) {
     if (!textContent || textContent.length < CONFIG.minTextLength) {
       alert('Not enough content to simplify. Please try a page with more text.');
       return;
     }
 
-    if (textContent.length > CONFIG.maxContentLength) {
-      textContent = textContent.substring(0, CONFIG.maxContentLength) + '...';
+    // Show processing indicator
+    showProcessingIndicator();
+
+    // Limit content length for AI processing
+    let processText = textContent;
+    if (textContent.length > 15000) {
+      processText = textContent.substring(0, 15000) + '...';
     }
 
-    const { text: simplifiedText, wordsChanged } = simplifyText(textContent);
-    const paragraphs = simplifiedText.split('\n\n').filter(p => p.trim().length > 0).length;
-    const jargonTerms = Object.keys(JARGON_DICT).filter(term => 
-      simplifiedText.toLowerCase().includes(term.toLowerCase())
-    ).length;
+    try {
+      // Try AI simplification first
+      const result = await simplifyWithAI(processText);
+      const simplifiedText = result.text;
+      const wordsChanged = result.wordsChanged;
+      const isAI = result.isAI;
 
-    const stats = { wordsChanged, paragraphs, jargonTerms };
-    const pageTitle = document.title || 'Untitled Page';
-    const pageUrl = window.location.href;
+      const paragraphs = simplifiedText.split('\n\n').filter(p => p.trim().length > 0).length;
+      const jargonTerms = Object.keys(JARGON_DICT).filter(term => 
+        simplifiedText.toLowerCase().includes(term.toLowerCase())
+      ).length;
 
-    const html = buildHTML(simplifiedText, stats, pageTitle, pageUrl);
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    
-    const newWindow = window.open(url, '_blank');
-    if (!newWindow) {
-      alert('Please allow pop-ups for this site to view the simplified content.');
-      return;
+      const stats = { 
+        wordsChanged, 
+        paragraphs, 
+        jargonTerms,
+        method: isAI ? 'AI-Powered' : 'Dictionary'
+      };
+      
+      const pageTitle = document.title || 'Untitled Page';
+      const pageUrl = window.location.href;
+
+      hideProcessingIndicator();
+
+      const html = buildHTML(simplifiedText, stats, pageTitle, pageUrl);
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const newWindow = window.open(url, '_blank');
+      if (!newWindow) {
+        alert('Please allow pop-ups for this site to view the simplified content.');
+        return;
+      }
+
+      chrome.runtime.sendMessage({
+        action: 'updateStats',
+        data: { pages: 1, words: wordsChanged }
+      });
+    } catch (error) {
+      console.error('Processing error:', error);
+      hideProcessingIndicator();
+      alert('Failed to simplify content. Please try again.');
     }
+  }
 
-    chrome.runtime.sendMessage({
-      action: 'updateStats',
-      data: { pages: 1, words: wordsChanged }
-    });
+  function showProcessingIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'simplify-processing';
+    indicator.innerHTML = `
+      <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:30px 50px;border-radius:15px;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;font-family:system-ui,sans-serif;">
+        <div style="font-size:48px;margin-bottom:15px;animation:spin 1s linear infinite;">🧠</div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:10px;">AI Simplifying Content...</div>
+        <div style="font-size:14px;opacity:0.9;">This may take 10-30 seconds</div>
+      </div>
+      <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+      </style>
+    `;
+    document.body.appendChild(indicator);
+  }
+
+  function hideProcessingIndicator() {
+    const indicator = document.getElementById('simplify-processing');
+    if (indicator) indicator.remove();
   }
 
   function buildHTML(simplifiedText, stats, pageTitle, pageUrl) {
@@ -237,9 +282,9 @@ ${css}
 </div>
 </div>
 <div class="stats">
-<div class="stat"><span class="stat-icon">📝</span><div class="stat-info"><span class="stat-value">${stats.wordsChanged}</span><span class="stat-label">Words Simplified</span></div></div>
+<div class="stat"><span class="stat-icon">🤖</span><div class="stat-info"><span class="stat-value">${stats.method}</span><span class="stat-label">Method</span></div></div>
+<div class="stat"><span class="stat-icon">📝</span><div class="stat-info"><span class="stat-value">${stats.wordsChanged}</span><span class="stat-label">Words Changed</span></div></div>
 <div class="stat"><span class="stat-icon">📄</span><div class="stat-info"><span class="stat-value">${stats.paragraphs}</span><span class="stat-label">Paragraphs</span></div></div>
-<div class="stat"><span class="stat-icon">💡</span><div class="stat-info"><span class="stat-value">${stats.jargonTerms}</span><span class="stat-label">Terms Explained</span></div></div>
 </div>
 <div class="content">
 <div class="simplified-content">
@@ -344,12 +389,12 @@ document.getElementById("original-btn").onclick=function(){window.open("${pageUr
 </script>`;
   }
 
-  function simplifyFullPage() {
+  async function simplifyFullPage() {
     const content = extractPageContent();
-    processAndOpenNewTab(content);
+    await processAndOpenNewTab(content);
   }
 
-  function simplifySelection() {
+  async function simplifySelection() {
     const selectedText = window.getSelection().toString().trim();
     
     if (!selectedText) {
@@ -362,7 +407,7 @@ document.getElementById("original-btn").onclick=function(){window.open("${pageUr
       return;
     }
 
-    processAndOpenNewTab(selectedText);
+    await processAndOpenNewTab(selectedText);
   }
 
   // ===== EVENT LISTENERS =====
