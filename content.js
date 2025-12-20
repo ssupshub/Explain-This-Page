@@ -13,40 +13,26 @@
   };
 
   // ===== DICTIONARIES =====
-  const WORD_SIMPLIFY = {
-    'utilize': 'use', 'utilization': 'use', 'implement': 'do', 'facilitate': 'help',
-    'demonstrate': 'show', 'indicate': 'show', 'establish': 'set up', 'maintain': 'keep',
-    'construct': 'build', 'obtain': 'get', 'acquire': 'get', 'purchase': 'buy',
-    'provide': 'give', 'assist': 'help', 'require': 'need', 'commence': 'start',
-    'terminate': 'end', 'eliminate': 'remove', 'generate': 'create', 'produce': 'make',
-    'however': 'but', 'therefore': 'so', 'consequently': 'so', 'furthermore': 'also',
-    'moreover': 'also', 'nevertheless': 'but', 'subsequently': 'then',
-    'approximately': 'about', 'predominantly': 'mostly', 'typically': 'usually',
-    'substantial': 'large', 'significant': 'important', 'considerable': 'large',
-    'numerous': 'many', 'sufficient': 'enough', 'inadequate': 'not enough',
-    'comprehend': 'understand', 'perceive': 'see', 'anticipate': 'expect',
-    'collaborate': 'work together', 'communicate': 'talk', 'participate': 'join',
-    'investigate': 'look into', 'analyze': 'study', 'examine': 'check',
-    'modify': 'change', 'enhance': 'improve', 'diminish': 'reduce'
-  };
+  // Use external Dictionary file for comprehensive word mappings
+  const WORD_SIMPLIFY = (typeof Dictionary !== 'undefined' && Dictionary.wordSimplify) 
+    ? Dictionary.wordSimplify 
+    : {
+        'utilize': 'use', 'implement': 'do', 'facilitate': 'help',
+        'demonstrate': 'show', 'establish': 'set up', 'maintain': 'keep',
+        'obtain': 'get', 'acquire': 'get', 'provide': 'give', 'require': 'need',
+        'commence': 'start', 'terminate': 'end', 'generate': 'create',
+        'however': 'but', 'therefore': 'so', 'furthermore': 'also',
+        'approximately': 'about', 'significant': 'important', 'numerous': 'many'
+      };
 
-  const JARGON_DICT = {
-    'algorithm': 'a set of steps to solve a problem',
-    'API': 'a way for programs to talk to each other',
-    'bandwidth': 'how much data can flow through internet',
-    'cache': 'stored data to make things load faster',
-    'cloud': 'storing data on internet servers',
-    'database': 'an organized collection of information',
-    'encryption': 'scrambling data to keep it secure',
-    'hypothesis': 'an educated guess that can be tested',
-    'methodology': 'the way research is done',
-    'revenue': 'money earned from selling things',
-    'stakeholder': 'anyone affected by a business decision',
-    'diagnosis': 'identifying what illness someone has',
-    'chronic': 'a long-lasting health condition',
-    'paradigm': 'a way of thinking about something',
-    'synthesis': 'combining parts to make a whole'
-  };
+  const JARGON_DICT = (typeof Dictionary !== 'undefined' && Dictionary.jargonDefinitions)
+    ? Dictionary.jargonDefinitions
+    : {
+        'algorithm': 'a set of steps to solve a problem',
+        'API': 'a way for programs to talk to each other',
+        'database': 'an organized collection of information',
+        'encryption': 'scrambling data to keep it secure'
+      };
 
   // ===== CORE FUNCTIONS =====
 
