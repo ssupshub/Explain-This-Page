@@ -342,7 +342,7 @@ ${css}
 <header class="header">
 <div class="header-content">
   <div class="header-icon">
-    <span class="brain-emoji">⚡</span>
+    <span class="header-emoji">⚡</span>
     <span class="sparkle">✨</span>
   </div>
   <div class="header-text">
@@ -580,7 +580,7 @@ body {
   font-size: 48px;
 }
 
-.brain-emoji {
+.header-emoji {
   display: block;
   animation: float 3s ease-in-out infinite;
 }
@@ -653,9 +653,7 @@ body {
   gap: 10px;
 }
 
-.stat-emoji {
-  font-size: 24px;
-}
+
 
 .stat-content {
   display: flex;
