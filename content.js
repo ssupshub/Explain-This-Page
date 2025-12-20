@@ -361,7 +361,6 @@ ${css}
 <!-- Stats Bar -->
 <div class="stats-bar">
 <div class="stat-item">
-  <span class="stat-emoji">⚡</span>
   <div class="stat-content">
     <span class="stat-value">${stats.method}</span>
     <span class="stat-label">Method</span>
@@ -369,7 +368,6 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
-  <span class="stat-emoji">✏️</span>
   <div class="stat-content">
     <span class="stat-value">${stats.wordsChanged}</span>
     <span class="stat-label">Words Changed</span>
@@ -377,7 +375,6 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
-  <span class="stat-emoji">📖</span>
   <div class="stat-content">
     <span class="stat-value">${readingTime} min</span>
     <span class="stat-label">Read Time</span>
@@ -385,7 +382,6 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
-  <span class="stat-emoji">📄</span>
   <div class="stat-content">
     <span class="stat-value">${stats.paragraphs}</span>
     <span class="stat-label">Paragraphs</span>
@@ -396,7 +392,7 @@ ${css}
 <!-- Content -->
 <article class="content">
 <div class="content-header">
-  <h2>📚 Simplified Content</h2>
+  <h2>Simplified Content</h2>
   <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
     <span class="copy-icon">📋</span>
     <span class="copy-text">Copy</span>
