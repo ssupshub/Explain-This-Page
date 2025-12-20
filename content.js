@@ -7,7 +7,7 @@
 
   // ===== CONFIGURATION =====
   const CONFIG = {
-    version: '5.1.0',
+    version: '5.2.0',
     minTextLength: 100,
     maxContentLength: 50000
   };
