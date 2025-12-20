@@ -1,4 +1,4 @@
-// Content Script v5.1 - Complete Rewrite (Bug-Free)
+// Content Script v5.2 - Complete Rewrite (Bug-Free)
 (function() {
   'use strict';
 
@@ -293,8 +293,8 @@
     const indicator = document.createElement('div');
     indicator.id = 'simplify-processing';
     indicator.innerHTML = `
-      <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:30px 50px;border-radius:15px;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;font-family:system-ui,sans-serif;">
-        <div style="font-size:48px;margin-bottom:15px;animation:spin 1s linear infinite;">🧠</div>
+      <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:linear-gradient(135deg,#8b5cf6,#7c3aed,#06b6d4);color:white;padding:30px 50px;border-radius:20px;box-shadow:0 25px 60px rgba(139,92,246,0.5);text-align:center;font-family:system-ui,sans-serif;">
+        <div style="font-size:48px;margin-bottom:15px;animation:spin 1s linear infinite;">⚡</div>
         <div style="font-size:20px;font-weight:600;margin-bottom:10px;">AI Simplifying Content...</div>
         <div style="font-size:14px;opacity:0.9;">This may take 10-30 seconds</div>
       </div>
@@ -342,7 +342,7 @@ ${css}
 <header class="header">
 <div class="header-content">
   <div class="header-icon">
-    <span class="brain-emoji">🧠</span>
+    <span class="brain-emoji">⚡</span>
     <span class="sparkle">✨</span>
   </div>
   <div class="header-text">

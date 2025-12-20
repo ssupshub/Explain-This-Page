@@ -1,4 +1,4 @@
-// Background Service Worker v5.0 - Fixed
+// Background Service Worker v5.2 - Fixed
 'use strict';
 
 class BackgroundService {
@@ -14,7 +14,7 @@ class BackgroundService {
 
   setupInstallListener() {
     chrome.runtime.onInstalled.addListener((details) => {
-      console.log('Explain This Page v5.0 installed:', details.reason);
+      console.log('Explain This Page v5.2 installed:', details.reason);
       this.initializeDefaults();
       this.createContextMenus();
     });
@@ -39,14 +39,14 @@ class BackgroundService {
       // Context menu for selected text
       chrome.contextMenus.create({
         id: 'explain-selection',
-        title: '🧠 Simplify selected text',
+        title: '⚡ Simplify selected text',
         contexts: ['selection']
       });
 
       // Context menu for full page
       chrome.contextMenus.create({
         id: 'explain-page',
-        title: '🧠 Simplify this page',
+        title: '⚡ Simplify this page',
         contexts: ['page']
       });
     });
