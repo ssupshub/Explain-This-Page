@@ -1,78 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explain This Page</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <div class="popup-container">
-    <!-- Header -->
-    <div class="popup-header">
-      <div class="popup-icon">🧠</div>
-      <div>
-        <h1 class="popup-title">Explain This Page</h1>
-        <p class="popup-subtitle">AI-Powered Simplification v5.0</p>
-      </div>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explain This Page</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <!-- Animated Background -->
+      <div class="animated-bg"></div>
 
-    <!-- Quick Actions -->
-    <div class="popup-actions">
-      <button id="explainBtn" class="btn btn-primary">
-        <span class="btn-icon">✨</span>
-        Simplify This Page
-      </button>
-    </div>
-
-    <!-- Instructions -->
-    <div class="popup-section">
-      <h3 class="section-title">How to Use</h3>
-      <div class="instructions">
-        <div class="instruction-item">
-          <span class="instruction-icon">1️⃣</span>
-          <div class="instruction-text">
-            <strong>Full Page:</strong> Click the button above or right-click → "Simplify this page"
+      <!-- Header -->
+      <header class="popup-header">
+        <div class="header-content">
+          <div class="popup-icon">
+            <span class="icon-brain">🧠</span>
+            <span class="icon-sparkle">✨</span>
+          </div>
+          <div class="header-text">
+            <h1 class="popup-title">Explain This Page</h1>
+            <p class="popup-subtitle">AI-Powered Simplification</p>
           </div>
         </div>
-        <div class="instruction-item">
-          <span class="instruction-icon">2️⃣</span>
-          <div class="instruction-text">
-            <strong>Selected Text:</strong> Highlight text → Right-click → "Simplify selected text"
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle dark mode"
+        >
+          <span class="theme-icon sun">☀️</span>
+          <span class="theme-icon moon">🌙</span>
+          <span class="toggle-slider"></span>
+        </button>
+      </header>
+
+      <!-- Main Content -->
+      <main class="popup-main">
+        <!-- Quick Actions -->
+        <section class="popup-actions">
+          <button id="explainBtn" class="btn btn-primary">
+            <span class="btn-icon">✨</span>
+            <span class="btn-text">Simplify This Page</span>
+            <span class="btn-loader" hidden>
+              <span class="loader-dot"></span>
+              <span class="loader-dot"></span>
+              <span class="loader-dot"></span>
+            </span>
+          </button>
+        </section>
+
+        <!-- Instructions -->
+        <section class="popup-section">
+          <h3 class="section-title">
+            <span class="title-icon">📖</span>
+            How to Use
+          </h3>
+          <div class="instructions">
+            <div class="instruction-item" data-step="1">
+              <span class="instruction-number">1</span>
+              <div class="instruction-content">
+                <strong>Full Page</strong>
+                <p>Click button above or right-click → "Simplify this page"</p>
+              </div>
+            </div>
+            <div class="instruction-item" data-step="2">
+              <span class="instruction-number">2</span>
+              <div class="instruction-content">
+                <strong>Selected Text</strong>
+                <p>Highlight text → Right-click → "Simplify selected text"</p>
+              </div>
+            </div>
+            <div class="instruction-item" data-step="3">
+              <span class="instruction-number">3</span>
+              <div class="instruction-content">
+                <strong>Result</strong>
+                <p>Simplified content opens in a beautiful new tab!</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="instruction-item">
-          <span class="instruction-icon">3️⃣</span>
-          <div class="instruction-text">
-            <strong>Result:</strong> Simplified content opens in a new tab!
+        </section>
+
+        <!-- Stats -->
+        <section class="popup-section">
+          <h3 class="section-title">
+            <span class="title-icon">📊</span>
+            Your Stats
+          </h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-glow"></div>
+              <div class="stat-icon">📄</div>
+              <div class="stat-value" id="pagesCount">0</div>
+              <div class="stat-label">Pages Simplified</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-glow"></div>
+              <div class="stat-icon">💡</div>
+              <div class="stat-value" id="wordsCount">0</div>
+              <div class="stat-label">Words Changed</div>
+            </div>
           </div>
+        </section>
+
+        <!-- Keyboard Shortcuts -->
+        <section class="popup-section shortcuts-section">
+          <h3 class="section-title">
+            <span class="title-icon">⌨️</span>
+            Quick Tips
+          </h3>
+          <div class="shortcuts-list">
+            <div class="shortcut-item">
+              <kbd>Right-click</kbd>
+              <span>Context menu options</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>Select + Right-click</kbd>
+              <span>Simplify selection only</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="popup-footer">
+        <div class="footer-content">
+          <span class="version-badge">v5.2.0</span>
+          <span class="footer-divider">•</span>
+          <span class="footer-text">Opens in New Tab</span>
+          <span class="footer-divider">•</span>
+          <span class="footer-emoji">🎉</span>
         </div>
-      </div>
+      </footer>
     </div>
 
-    <!-- Stats -->
-    <div class="popup-section">
-      <h3 class="section-title">Your Stats</h3>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📄</div>
-          <div class="stat-value" id="pagesCount">0</div>
-          <div class="stat-label">Pages Simplified</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💡</div>
-          <div class="stat-value" id="wordsCount">0</div>
-          <div class="stat-label">Words Simplified</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="popup-footer">
-      <p>Version 5.0.0 | New Tab Approach - No Pop-ups! 🎉</p>
-    </div>
-  </div>
-
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>

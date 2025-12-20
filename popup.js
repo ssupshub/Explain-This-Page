@@ -1,33 +1,70 @@
-// Popup Script v5.0 - Error Fixed
-'use strict';
+// Popup Script v5.2 - Enhanced with Theme Support
+"use strict";
 
 class PopupController {
   constructor() {
     this.elements = {
-      explainBtn: document.getElementById('explainBtn'),
-      pagesCount: document.getElementById('pagesCount'),
-      wordsCount: document.getElementById('wordsCount')
+      explainBtn: document.getElementById("explainBtn"),
+      pagesCount: document.getElementById("pagesCount"),
+      wordsCount: document.getElementById("wordsCount"),
+      themeToggle: document.getElementById("themeToggle"),
     };
-    
+
     this.init();
   }
 
   init() {
     // Verify elements exist before proceeding
-    if (!this.elements.explainBtn || !this.elements.pagesCount || !this.elements.wordsCount) {
-      console.error('Required popup elements not found');
+    if (
+      !this.elements.explainBtn ||
+      !this.elements.pagesCount ||
+      !this.elements.wordsCount
+    ) {
+      console.error("Required popup elements not found");
       return;
     }
 
+    this.loadTheme();
     this.loadStats();
     this.attachEventListeners();
+    this.addEntranceAnimation();
   }
 
+  // ===== Theme Management =====
+  loadTheme() {
+    chrome.storage.sync.get(["theme"], (data) => {
+      const theme = data.theme || "light";
+      this.applyTheme(theme);
+    });
+  }
+
+  applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+
+  toggleTheme() {
+    const currentTheme =
+      document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+
+    this.applyTheme(newTheme);
+    chrome.storage.sync.set({ theme: newTheme });
+
+    // Add subtle haptic feedback animation
+    if (this.elements.themeToggle) {
+      this.elements.themeToggle.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        this.elements.themeToggle.style.transform = "";
+      }, 100);
+    }
+  }
+
+  // ===== Stats Management =====
   loadStats() {
-    chrome.storage.sync.get(['pagesExplained', 'wordsSimplified'], (data) => {
+    chrome.storage.sync.get(["pagesExplained", "wordsSimplified"], (data) => {
       this.updateStats({
         pagesExplained: data.pagesExplained || 0,
-        wordsSimplified: data.wordsSimplified || 0
+        wordsSimplified: data.wordsSimplified || 0,
       });
     });
   }
@@ -41,227 +78,235 @@ class PopupController {
 
   animateNumber(element, target) {
     if (!element) return;
-    
+
     const current = parseInt(element.textContent) || 0;
-    const increment = Math.ceil((target - current) / 20);
-    
+    const diff = target - current;
+    const increment = Math.ceil(diff / 20);
+    const duration = 500; // ms
+    const stepTime = duration / 20;
+
     if (current < target) {
-      element.textContent = Math.min(current + increment, target);
-      setTimeout(() => this.animateNumber(element, target), 20);
+      element.textContent = this.formatNumber(
+        Math.min(current + increment, target)
+      );
+      setTimeout(() => this.animateNumber(element, target), stepTime);
     } else {
-      element.textContent = target;
+      element.textContent = this.formatNumber(target);
     }
   }
 
-  attachEventListeners() {
-    if (!this.elements.explainBtn) return;
+  formatNumber(num) {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num.toString();
+  }
 
-    // Explain button
-    this.elements.explainBtn.addEventListener('click', () => {
-      this.triggerExplanation();
+  // ===== Entrance Animation =====
+  addEntranceAnimation() {
+    const sections = document.querySelectorAll(".popup-section");
+    sections.forEach((section, index) => {
+      section.style.animationDelay = `${0.1 + index * 0.1}s`;
     });
   }
 
+  // ===== Event Listeners =====
+  attachEventListeners() {
+    // Explain button
+    if (this.elements.explainBtn) {
+      this.elements.explainBtn.addEventListener("click", () => {
+        this.triggerExplanation();
+      });
+    }
+
+    // Theme toggle
+    if (this.elements.themeToggle) {
+      this.elements.themeToggle.addEventListener("click", () => {
+        this.toggleTheme();
+      });
+    }
+
+    // Add hover effects to instruction items
+    const instructionItems = document.querySelectorAll(".instruction-item");
+    instructionItems.forEach((item) => {
+      item.addEventListener("mouseenter", () => {
+        item.style.transform = "translateX(4px)";
+      });
+      item.addEventListener("mouseleave", () => {
+        item.style.transform = "";
+      });
+    });
+  }
+
+  // ===== Content Script Helpers =====
   async ensureContentScript(tab) {
     try {
       // Check if tab URL is valid for content script injection
-      if (!tab.url || 
-          tab.url.startsWith('chrome://') || 
-          tab.url.startsWith('chrome-extension://') ||
-          tab.url.startsWith('edge://') ||
-          tab.url.startsWith('about:')) {
+      if (
+        !tab.url ||
+        tab.url.startsWith("chrome://") ||
+        tab.url.startsWith("chrome-extension://") ||
+        tab.url.startsWith("edge://") ||
+        tab.url.startsWith("about:") ||
+        tab.url.startsWith("file://")
+      ) {
         return false;
       }
 
       // Try to ping the content script
       try {
-        await chrome.tabs.sendMessage(tab.id, { action: 'ping' });
+        await chrome.tabs.sendMessage(tab.id, { action: "ping" });
         return true;
       } catch (pingError) {
         // Content script not loaded, inject it
         try {
           await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            files: ['content.js']
+            files: ["content.js"],
           });
-          
+
           // Wait for script to initialize
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 150));
           return true;
         } catch (injectError) {
-          console.error('Failed to inject content script:', injectError);
+          console.error("Failed to inject content script:", injectError);
           return false;
         }
       }
     } catch (error) {
-      console.error('Error ensuring content script:', error);
+      console.error("Error ensuring content script:", error);
       return false;
     }
   }
 
+  // ===== Main Action =====
   async triggerExplanation() {
     if (!this.elements.explainBtn) return;
 
     // Add loading state
-    this.elements.explainBtn.disabled = true;
-    this.elements.explainBtn.innerHTML = `
-      <span class="btn-icon">⏳</span>
-      Processing...
-    `;
+    this.setButtonLoading(true);
 
     try {
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+
       if (!tabs || !tabs[0]) {
-        this.showError('No active tab found');
-        this.resetButton();
+        this.showFeedback("No active tab found", "error");
+        this.setButtonLoading(false);
         return;
       }
 
       const tab = tabs[0];
 
       // Check if we can access this page
-      if (tab.url.startsWith('chrome://') || 
-          tab.url.startsWith('chrome-extension://') ||
-          tab.url.startsWith('edge://') ||
-          tab.url.startsWith('about:')) {
-        this.showError('Cannot simplify browser pages. Try a regular webpage!');
-        this.resetButton();
+      if (
+        tab.url.startsWith("chrome://") ||
+        tab.url.startsWith("chrome-extension://") ||
+        tab.url.startsWith("edge://") ||
+        tab.url.startsWith("about:") ||
+        tab.url.startsWith("file://")
+      ) {
+        this.showFeedback(
+          "Cannot simplify browser pages. Try a regular webpage!",
+          "error"
+        );
+        this.setButtonLoading(false);
         return;
       }
 
       // Ensure content script is loaded
       const ready = await this.ensureContentScript(tab);
-      
+
       if (!ready) {
-        this.showError('Cannot access this page. Please refresh and try again.');
-        this.resetButton();
+        this.showFeedback(
+          "Cannot access this page. Please refresh and try again.",
+          "error"
+        );
+        this.setButtonLoading(false);
         return;
       }
 
       // Send message to simplify page
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'simplifyPage' });
-      
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: "simplifyPage",
+      });
+
       if (response && response.success) {
-        this.showFeedback('Opening simplified page in new tab!');
+        this.showFeedback("Opening simplified page in new tab! ✨", "success");
         setTimeout(() => window.close(), 1500);
       } else {
-        this.showError('Failed to simplify. Please try again.');
-        this.resetButton();
+        this.showFeedback("Failed to simplify. Please try again.", "error");
+        this.setButtonLoading(false);
       }
-      
     } catch (error) {
-      console.error('Error:', error);
-      
+      console.error("Error:", error);
+
       // Provide user-friendly error message
-      let errorMessage = 'Please refresh the page and try again.';
-      
-      if (error.message && error.message.includes('Cannot access')) {
-        errorMessage = 'Cannot access this page. Try a regular webpage.';
-      } else if (error.message && error.message.includes('Receiving end does not exist')) {
-        errorMessage = 'Extension not ready. Please refresh the page.';
+      let errorMessage = "Please refresh the page and try again.";
+
+      if (error.message && error.message.includes("Cannot access")) {
+        errorMessage = "Cannot access this page. Try a regular webpage.";
+      } else if (
+        error.message &&
+        error.message.includes("Receiving end does not exist")
+      ) {
+        errorMessage = "Extension not ready. Please refresh the page.";
       }
-      
-      this.showError(errorMessage);
-      this.resetButton();
+
+      this.showFeedback(errorMessage, "error");
+      this.setButtonLoading(false);
     }
   }
 
-  resetButton() {
+  // ===== Button States =====
+  setButtonLoading(loading) {
     if (!this.elements.explainBtn) return;
 
-    this.elements.explainBtn.disabled = false;
-    this.elements.explainBtn.innerHTML = `
-      <span class="btn-icon">✨</span>
-      Simplify This Page
-    `;
+    const btnIcon = this.elements.explainBtn.querySelector(".btn-icon");
+    const btnText = this.elements.explainBtn.querySelector(".btn-text");
+    const btnLoader = this.elements.explainBtn.querySelector(".btn-loader");
+
+    this.elements.explainBtn.disabled = loading;
+
+    if (loading) {
+      if (btnIcon) btnIcon.hidden = true;
+      if (btnText) btnText.textContent = "Processing";
+      if (btnLoader) btnLoader.hidden = false;
+    } else {
+      if (btnIcon) btnIcon.hidden = false;
+      if (btnText) btnText.textContent = "Simplify This Page";
+      if (btnLoader) btnLoader.hidden = true;
+    }
   }
 
-  showFeedback(message) {
-    const feedback = document.createElement('div');
-    feedback.className = 'feedback-message';
-    feedback.textContent = message;
-    feedback.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      animation: slideDown 0.3s ease;
-    `;
-    
-    document.body.appendChild(feedback);
-    setTimeout(() => {
-      feedback.style.animation = 'slideUp 0.3s ease';
-      setTimeout(() => feedback.remove(), 300);
-    }, 2000);
-  }
+  // ===== Feedback Messages =====
+  showFeedback(message, type = "success") {
+    // Remove any existing feedback
+    const existingFeedback = document.querySelector(".feedback-message");
+    if (existingFeedback) {
+      existingFeedback.remove();
+    }
 
-  showError(message) {
-    const feedback = document.createElement('div');
-    feedback.className = 'feedback-message';
+    const feedback = document.createElement("div");
+    feedback.className = `feedback-message feedback-${type}`;
     feedback.textContent = message;
-    feedback.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      animation: slideDown 0.3s ease;
-      max-width: 300px;
-      text-align: center;
-    `;
-    
+
     document.body.appendChild(feedback);
+
+    // Auto dismiss
+    const duration = type === "error" ? 4000 : 2500;
     setTimeout(() => {
-      feedback.style.animation = 'slideUp 0.3s ease';
+      feedback.style.animation = "slideOutUp 0.3s ease forwards";
       setTimeout(() => feedback.remove(), 300);
-    }, 3000);
+    }, duration);
   }
 }
 
-// Add animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-  
-  @keyframes slideUp {
-    from {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
-    }
-  }
-`;
-document.head.appendChild(style);
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
   new PopupController();
 });
