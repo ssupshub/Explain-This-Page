@@ -13,26 +13,9 @@
   };
 
   // ===== DICTIONARIES =====
-  // Use external Dictionary file for comprehensive word mappings
-  const WORD_SIMPLIFY = (typeof Dictionary !== 'undefined' && Dictionary.wordSimplify) 
-    ? Dictionary.wordSimplify 
-    : {
-        'utilize': 'use', 'implement': 'do', 'facilitate': 'help',
-        'demonstrate': 'show', 'establish': 'set up', 'maintain': 'keep',
-        'obtain': 'get', 'acquire': 'get', 'provide': 'give', 'require': 'need',
-        'commence': 'start', 'terminate': 'end', 'generate': 'create',
-        'however': 'but', 'therefore': 'so', 'furthermore': 'also',
-        'approximately': 'about', 'significant': 'important', 'numerous': 'many'
-      };
-
-  const JARGON_DICT = (typeof Dictionary !== 'undefined' && Dictionary.jargonDefinitions)
-    ? Dictionary.jargonDefinitions
-    : {
-        'algorithm': 'a set of steps to solve a problem',
-        'API': 'a way for programs to talk to each other',
-        'database': 'an organized collection of information',
-        'encryption': 'scrambling data to keep it secure'
-      };
+  // Use external Dictionary file (loaded before content.js via manifest)
+  const WORD_SIMPLIFY = typeof Dictionary !== 'undefined' ? Dictionary.wordSimplify : {};
+  const JARGON_DICT = typeof Dictionary !== 'undefined' ? Dictionary.jargonDefinitions : {};
 
   // ===== CORE FUNCTIONS =====
 
@@ -280,12 +263,14 @@
     indicator.id = 'simplify-processing';
     indicator.innerHTML = `
       <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999999;background:linear-gradient(135deg,#8b5cf6,#7c3aed,#06b6d4);color:white;padding:30px 50px;border-radius:20px;box-shadow:0 25px 60px rgba(139,92,246,0.5);text-align:center;font-family:system-ui,sans-serif;">
-        <div style="font-size:48px;margin-bottom:15px;animation:spin 1s linear infinite;">⚡</div>
+        <div style="margin-bottom:15px;animation:pulse 2s ease-in-out infinite;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <div style="font-size:20px;font-weight:600;margin-bottom:10px;">AI Simplifying Content...</div>
         <div style="font-size:14px;opacity:0.9;">This may take 10-30 seconds</div>
       </div>
       <style>
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
       </style>
     `;
     document.body.appendChild(indicator);
@@ -317,8 +302,8 @@ ${css}
 <!-- Theme Toggle -->
 <div class="theme-toggle">
 <button class="theme-btn" id="theme-toggle-btn" aria-label="Toggle theme">
-  <span class="sun-icon">☀️</span>
-  <span class="moon-icon">🌙</span>
+  <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 </button>
 </div>
 
@@ -328,8 +313,7 @@ ${css}
 <header class="header">
 <div class="header-content">
   <div class="header-icon">
-    <span class="header-emoji">⚡</span>
-    <span class="sparkle">✨</span>
+    <svg class="logo-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
   </div>
   <div class="header-text">
     <h1>Simplified Content</h1>
@@ -338,7 +322,7 @@ ${css}
 </div>
 <div class="header-meta">
   <a href="${escapeHtml(pageUrl)}" target="_blank" class="source-link">
-    <span class="link-icon">🔗</span>
+    <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
     <span class="link-text">View Original</span>
   </a>
 </div>
@@ -347,6 +331,7 @@ ${css}
 <!-- Stats Bar -->
 <div class="stats-bar">
 <div class="stat-item">
+  <svg class="stat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
   <div class="stat-content">
     <span class="stat-value">${stats.method}</span>
     <span class="stat-label">Method</span>
@@ -354,6 +339,7 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
+  <svg class="stat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
   <div class="stat-content">
     <span class="stat-value">${stats.wordsChanged}</span>
     <span class="stat-label">Words Changed</span>
@@ -361,6 +347,7 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
+  <svg class="stat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
   <div class="stat-content">
     <span class="stat-value">${readingTime} min</span>
     <span class="stat-label">Read Time</span>
@@ -368,6 +355,7 @@ ${css}
 </div>
 <div class="stat-divider"></div>
 <div class="stat-item">
+  <svg class="stat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
   <div class="stat-content">
     <span class="stat-value">${stats.paragraphs}</span>
     <span class="stat-label">Paragraphs</span>
@@ -380,7 +368,7 @@ ${css}
 <div class="content-header">
   <h2>Simplified Content</h2>
   <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
-    <span class="copy-icon">📋</span>
+    <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     <span class="copy-text">Copy</span>
   </button>
 </div>
@@ -392,15 +380,15 @@ ${css}
 <!-- Actions -->
 <div class="actions">
 <button class="btn btn-primary" id="pdf-btn">
-  <span class="btn-icon">📥</span>
+  <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
   <span>Download PDF</span>
 </button>
 <button class="btn btn-secondary" id="original-btn">
-  <span class="btn-icon">🔗</span>
+  <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
   <span>View Original</span>
 </button>
 <button class="btn btn-ghost" id="close-btn">
-  <span class="btn-icon">✕</span>
+  <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   <span>Close</span>
 </button>
 </div>
@@ -419,10 +407,81 @@ ${js}
 </html>`;
   }
 
+
+
   function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    if (!text) return '';
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getJS(pageUrl) {
+    return `<script>
+      (function() {
+        // Theme Management
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const root = document.documentElement;
+        
+        // Initialize Theme
+        const savedTheme = localStorage.getItem('etp-theme') || 
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        setTheme(savedTheme);
+
+        function setTheme(theme) {
+          root.setAttribute('data-theme', theme);
+          if (theme === 'dark') {
+            root.classList.add('dark');
+          } else {
+            root.classList.remove('dark');
+          }
+          localStorage.setItem('etp-theme', theme);
+        }
+
+        themeBtn.addEventListener('click', () => {
+          const current = root.getAttribute('data-theme');
+          setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+
+        // Copy Button
+        const copyBtn = document.getElementById('copy-btn');
+        if (copyBtn) {
+          copyBtn.addEventListener('click', async () => {
+            const text = document.getElementById('content-body').innerText;
+            try {
+              await navigator.clipboard.writeText(text);
+              showToast('✨ Copied to clipboard!', 'success');
+            } catch (err) {
+              showToast('❌ Failed to copy', 'error');
+            }
+          });
+        }
+
+        // Action Buttons
+        document.getElementById('pdf-btn')?.addEventListener('click', () => window.print());
+        document.getElementById('close-btn')?.addEventListener('click', () => window.close());
+        document.getElementById('original-btn')?.addEventListener('click', () => {
+          window.open('${escapeHtml(pageUrl)}', '_blank');
+        });
+
+        // Toast Notification
+        function showToast(message, type = 'default') {
+          const toast = document.getElementById('toast');
+          toast.textContent = message;
+          toast.style.opacity = '1';
+          toast.style.transform = 'translate(-50%, -20px)';
+          
+          setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translate(-50%, 100px)';
+          }, 3000);
+        }
+      })();
+    <\/script>`;
   }
 
   function getCSS() {
@@ -563,30 +622,24 @@ body {
 
 .header-icon {
   position: relative;
-  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
 }
 
-.header-emoji {
-  display: block;
-  animation: float 3s ease-in-out infinite;
-}
-
-.sparkle {
-  position: absolute;
-  top: -10px;
-  right: -14px;
-  font-size: 20px;
-  animation: sparkle 2s ease-in-out infinite;
+.logo-icon {
+  stroke: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes sparkle {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  50% { transform: scale(1.3) rotate(20deg); opacity: 0.7; }
+  50% { transform: translateY(-4px); }
 }
 
 .header-text h1 {
@@ -640,6 +693,11 @@ body {
 }
 
 
+
+.stat-icon {
+  color: var(--primary);
+  filter: drop-shadow(0 2px 4px rgba(139, 92, 246, 0.2));
+}
 
 .stat-content {
   display: flex;
@@ -798,10 +856,6 @@ body {
   border: none;
 }
 
-.btn-icon {
-  font-size: 16px;
-}
-
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-emerald), #059669);
   color: white;
@@ -913,73 +967,6 @@ body {
   }
 }
 </style>`;
-  }
-
-  function getJS(pageUrl) {
-    return `<script>
-(function(){
-  // Theme handling
-  var savedTheme = localStorage.getItem("simplified-theme") || "light";
-  if (savedTheme === "dark") document.body.classList.add("dark");
-  
-  document.getElementById("theme-toggle-btn").onclick = function() {
-    document.body.classList.toggle("dark");
-    var newTheme = document.body.classList.contains("dark") ? "dark" : "light";
-    localStorage.setItem("simplified-theme", newTheme);
-  };
-
-  // Reading progress bar
-  window.addEventListener("scroll", function() {
-    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    var scrolled = (winScroll / height) * 100;
-    document.getElementById("progress-bar").style.width = scrolled + "%";
-  });
-
-  // Copy to clipboard
-  document.getElementById("copy-btn").onclick = function() {
-    var content = document.getElementById("content-body").innerText;
-    navigator.clipboard.writeText(content).then(function() {
-      showToast("Copied to clipboard! ✓");
-      var btn = document.getElementById("copy-btn");
-      btn.innerHTML = '<span class="copy-icon">✓</span><span class="copy-text">Copied!</span>';
-      setTimeout(function() {
-        btn.innerHTML = '<span class="copy-icon">📋</span><span class="copy-text">Copy</span>';
-      }, 2000);
-    }).catch(function() {
-      showToast("Failed to copy");
-    });
-  };
-
-  // PDF download
-  document.getElementById("pdf-btn").onclick = function() {
-    var btn = this;
-    var html = btn.innerHTML;
-    btn.innerHTML = '<span class="btn-icon">⏳</span><span>Generating...</span>';
-    btn.disabled = true;
-    window.print();
-    setTimeout(function() { btn.innerHTML = html; btn.disabled = false; }, 1000);
-  };
-
-  // Close button
-  document.getElementById("close-btn").onclick = function() {
-    window.close();
-  };
-
-  // Original page button
-  document.getElementById("original-btn").onclick = function() {
-    window.open("${pageUrl}", "_blank");
-  };
-
-  // Toast notification
-  function showToast(msg) {
-    var toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(function() { toast.classList.remove("show"); }, 3000);
-  }
-})();
-</script>`;
   }
 
   async function simplifyFullPage() {
