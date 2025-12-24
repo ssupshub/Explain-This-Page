@@ -1,23 +1,26 @@
 # 🎯 Version 5 Series Improvements
 
-This document outlines the major evolution from v4 to the v5.x series.
+This document outlines the major evolution from v4 to the v5.x series, culminating in the massive v5.3 Refactor.
 
-## 🌟 v5.2: Visual Polish & Tools
+## 🌟 v5.3: The "Modern Era" Refactor
 
-_Latest Update_
+_Latest Update (December 2025)_
 
-The focus of v5.2 was making the experience **beautiful** and **useful**.
+The focus of v5.3 was **Stability**, **Performance**, and **Developer Experience**. We migrated from a fragile vanilla implementation to an enterprise-grade React architecture.
 
-### key Changes:
+### Key Changes:
 
-- **Glassmorphism Design**: Replaced flat colors with modern, translucent materials.
-- **Dark Mode**: First-class support for dark themes.
-- **Productivity Tools**: PDF Export and Clipboard actions added.
-- **Statistics**: Enhanced reading time calculations.
+- **React 18 Migration**: Replaced manual DOM manipulation with React's declarative component model, reducing bugs and improving state management.
+- **TypeScript**: The entire codebase is now strictly typed, eliminating "undefined is not a function" errors forever.
+- **Modern Build Pipeline**: Switched to **Vite**, enabling instant HMR (Hot Module Replacement) and optimized production bundles.
+- **Robust Architecture**:
+  - **Viewer**: Moved from unstable `Blob` URLs to a persistent `viewer.html` resource.
+  - **Auto-Injection**: The extension now self-heals if connection to a page is lost.
+- **Premium Glass UI**: A completely custom CSS design system using Tailwind features, blurring, and gradients.
 
 ---
 
-## 💥 v5.0: The Architecture Shift
+## 💥 v5.0-v5.2: The UX Shift
 
 ### Problem: The Overlay Era (v4)
 
@@ -37,32 +40,42 @@ We now extract the content and open it in a pristine **New Tab**.
 
 ---
 
-## 📊 Comparison: v4 vs v5.x
+## 📊 Comparison: v4 -> v5.2 -> v5.3
 
-| Feature       | v4.0 (Old)         | v5.2 (New)               |
-| ------------- | ------------------ | ------------------------ |
-| **Display**   | Page Overlay       | **Dedicated New Tab**    |
-| **Theme**     | Light Only         | **Light + Dark + Glass** |
-| **Capacity**  | ~500 words         | **50,000+ words**        |
-| **Blocking**  | Frequently Blocked | **Never Blocked**        |
-| **Export**    | None               | **PDF Download**         |
-| **Selection** | No                 | **Yes (Right-click)**    |
+| Feature          | v4.0 (Legacy) | v5.2 (Previous) | v5.3 (Current)                 |
+| :--------------- | :------------ | :-------------- | :----------------------------- |
+| **Tech Stack**   | Vanilla JS    | Vanilla JS      | **React + TypeScript + Vite**  |
+| **Display**      | Page Overlay  | New Tab (Blob)  | **New Tab (Extension Page)**   |
+| **Reliability**  | Low           | Medium          | **High (Auto-Healing)**        |
+| **Theme**        | Light Only    | Light + Dark    | **Glassmorphism + Animations** |
+| **Code Quality** | Spaghetti     | Modular JS      | **Strictly Typed TS**          |
+| **Build System** | None          | Manual          | **Vite + Tailwind**            |
 
 ---
 
-## 🛠️ Technical Improvements in v5
+## 🛠️ Deep Dive: v5.3 Technical Wins
 
-### Content Extraction
+### 1. Robust Messaging
 
-**Old**: Grabbed just the `<p>` tags.
-**New**: Intelligently scans `article`, `section`, `div`, `li`, and excludes navigational elements/footers to build a clean "Reader Mode" text.
+**Old**: `sendMessage` often failed if the user refreshed the extension but not the page.
+**New**: v5.3 detects this failure and **dynamically injects** the content script on-the-fly, creating a seamless user experience without requiring page reloads.
 
-### Detection Logic
+### 2. Viewer Stability
 
-**Old**: Simple word matching.
-**New**: Context-aware regex patterns that preserve sentence structure and grammar (Active Voice conversion, Sentence Breaking).
+**Old**: Used `URL.createObjectURL(blob)`. These URLs were temporary and often broke if the extension was reloaded or memory was cleared.
+**New**: Uses `chrome-extension://[id]/viewer.html`. This URL is permanent, shareable, and stable.
 
-### Privacy
+### 3. Component Architecture
 
-**Old**: Some implementation plans considered external APIs.
-**New**: v5.2 runs **100% Locally** using advanced dictionary & regex algorithms. Private and fast.
+**Old**: One giant `popup.js` file handling UI, logic, and messaging.
+**New**: Separated into:
+
+- `components/GlassCard.tsx`: Reusable UI
+- `hooks/`: Custom React hooks
+- `utils/processor.ts`: Pure logic for text simplification
+- `popup/App.tsx`: View layer
+
+### 4. Privacy & Speed
+
+**Old**: Some iterations considered API calls.
+**New**: Still runs **100% Locally**. The dictionary lookup is instant (~10ms) compared to AI API calls (~2000ms), making it the fastest simplifier available.
