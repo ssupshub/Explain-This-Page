@@ -1,25 +1,27 @@
-# 🧠 Explain This Page - v5.2 (AI-Powered & Beautiful!)
+# 🧠 Explain This Page - v5.3
 
-A powerful Chrome extension that uses **Advanced AI Logic** to transform complex webpages into easy-to-understand content. Real simplification, not just word replacement!
+A powerful Chrome extension that uses **Advanced Logic** to transform complex webpages into easy-to-understand content. Real simplification, not just word replacement!
 
-![Version](https://img.shields.io/badge/version-5.2.0-blueviolet)
-![Rating](https://img.shields.io/badge/rating-★★★★★-yellow)
-![Theme](https://img.shields.io/badge/theme-glassmorphism-cyan)
+![Version](https://img.shields.io/badge/version-5.3.0-blueviolet)
+![Stack](https://img.shields.io/badge/stack-React_TS_Vite-blue)
+![Theme](https://img.shields.io/badge/theme-Glassmorphism-cyan)
 
-## ✨ What's New in v5.2
+## ✨ What's New in v5.3 (Refactor)
+
+### 🛠️ **Modern Tech Stack**
+
+We have completely rewritten the extension using a modern, robust architecture:
+
+- **React 18**: For a responsive and dynamic UI.
+- **TypeScript**: Ensuring code reliability and type safety.
+- **Vite**: For lightning-fast builds and optimized assets.
+- **Tailwind CSS**: For a stunning, maintainable design system.
 
 ### 🎨 **Visual Overhaul (Glassmorphism)**
 
-- **Dark Mode**: Fully supported with system sync and manual toggle
-- **Glassmorphism UI**: Beautiful semi-transparent frosted glass capability
-- **Fluid Animations**: Smooth transitions and interactive elements
-- **Modern Typography**: Clean, readable fonts for better comprehension
-
-### 🛠️ **New Tools**
-
-- **PDF Export**: Save simplified pages as PDF with one click
-- **Copy to Clipboard**: Quickly copy the simplified text
-- **Theme Toggle**: Switch between Light and Dark modes instantly
+- **Premium Design**: A stunning interface featuring frosted glass, gradients, and subtle animations.
+- **Dedicated Viewer**: Replaced the old "blob URL" with a proper `viewer.html` for a stable reading experience.
+- **Interactive Stats**: See exactly how much time you saved and how many jargon terms were explained.
 
 ---
 
@@ -27,129 +29,68 @@ A powerful Chrome extension that uses **Advanced AI Logic** to transform complex
 
 ### Core Functionality
 
-- **Full Page Simplification**: Process entire webpages in a new tab
-- **Text Selection**: Simplify just the text you select
-- **Smart Word Replacement**: 100+ complex words → simple words
-- **Jargon Explanations**: Hover over highlighted terms for definitions
-- **Distraction-Free**: Clean reading environment without ads or clutter
+- **Full Page Simplification**: Process entire webpages in a beautiful, distraction-free reader.
+- **Text Selection**: Right-click to simplify just the specific paragraph you need.
+- **Smart Dictionary**: The engine replaces complex words and highlights jargon.
+- **Jargon Tooltips**: Hover over highlighted terms to see instant definitions.
 
 ### User Experience
 
-- **No Pop-ups**: Everything opens in a new tab (bypasses blockers)
-- **Security**: 100% local processing, no data leaves your browser
-- **Responsive**: Works perfectly on any screen size
+- **Auto-Injection**: No more "Please reload the page" errors—the extension handles connections intelligently.
+- **Viewer Mode**: A dedicated reading environment with dark mode support.
+- **Tools**: Copy to clipboard, nice typography, and time-saved estimates.
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Build
 
-### Step 1: Download Files
+### Prerequisites
 
-Create a folder named `explain-this-page-v5` with all project files.
+- Node.js installed on your machine.
 
-### Step 2: Load Extension
+### Installation
+
+1. Open a terminal in the project folder.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Build the project:
+   ```bash
+   npm run build
+   ```
+
+### Loading in Chrome
 
 1. Open Chrome: `chrome://extensions/`
-2. Enable **"Developer mode"** (top right toggle)
-3. Click **"Load unpacked"**
-4. Select the `explain-this-page-v5` folder
+2. Enable **"Developer mode"** (top right toggle).
+3. Click **"Load unpacked"**.
+4. Select the **`dist`** folder inside your project directory.
 5. Done! 🎉
 
 ---
 
 ## 🎮 How to Use
 
-### Method 1: Full Page Simplification
+### Method 1: Popup
 
-1. Click the 🧠 icon in toolbar
-2. Click **"Simplify This Page"**
-3. A new tab opens with the simplified version
+1. Click the **Explain This Page** icon in the toolbar.
+2. Click the big **Simplify** button.
+3. Enjoy the simplified content in the Viewer.
 
-### Method 2: Text Selection
+### Method 2: Context Menu
 
-1. **Highlight** any text on a webpage
-2. **Right-click** on the selected text
-3. Choose **"🧠 Explain selected text"**
-
-### Method 3: Context Menu
-
-1. Right-click anywhere on a page
-2. Select **"🧠 Explain this page"**
+1. Highlight any text on a webpage.
+2. Right-click and choose **"Simplify Selected Text"**.
 
 ---
 
-## 🎨 Interface Guide
+## 🔧 Technical details
 
-### The New Tab Experience
-
-- **Top Bar**: Theme toggle (🌞/🌙), Original Link
-- **Stats Bar**: Words Changed, Reading Time, Paragraphs
-- **Content Area**: The simplified text with highlighted jargon
-- **Action Bar**:
-  - `Download PDF` - Save as file
-  - `View Original` - Go back to source
-  - `Close` - Close the tab
-
-### Reading & Comprehension
-
-- **Complex Words**: Automatically replaced with simpler synonyms
-- **Jargon Terms**: Highlighted in **yellow/gradient**. Hover to see definitions.
-- **Reading Time**: Estimated time to read the simplified content
+- **Manifest V3**: Future-proof configuration.
+- **Vite Multi-Page Build**: optimized bundles for Popup, Content Script, Background, and Viewer.
+- **React Components**: Modular and reusable UI components.
 
 ---
 
-## 🔧 Technical Details
-
-### v5.2 Architecture
-
-- **Manifest V3**: Compliant with latest Chrome standards
-- **Local Processing**: Enhanced dictionary algorithm for instant results
-- **No API Keys**: Works out of the box without paid subscriptions
-- **CSS Variables**: Easy theming and maintenance
-
-### Permissions
-
-- `scripting` & `activeTab`: To read page content
-- `storage`: To save user preferences (theme, stats)
-- `contextMenus`: For right-click functionality
-
----
-
-## 🐛 Troubleshooting
-
-### New Tab Not Opening?
-
-- **Allow Pop-ups**: Some sites block new tabs. Look for the "Pop-up blocked" icon in the address bar and allow it for seeing your result.
-
-### Extension Not Working?
-
-- **Refresh**: Reload the webpage after installing the extension.
-- **Content Length**: Very short text (<100 chars) won't be processed.
-
----
-
-## 📝 Changelog
-
-### v5.2.0 (Current)
-
-- ✨ Added Dark Mode support
-- ✨ New Glassmorphism UI design
-- ✨ PDF Download feature
-- ✨ Copy to Clipboard button
-- 🎨 Improved simplified text formatting
-
-### v5.1.0
-
-- 🤖 "AI-Powered" logic improvements
-- ⚡ Faster processing speed
-- 🐛 Fixed various text extraction bugs
-
-### v5.0.0
-
-- 💥 Complete rewrite: Moved from Overlay to New Tab approach
-- 🚀 Full page processing supported
-
----
-
-**Made with ❤️ for better reading.**
-Version 5.2.0 | December 2025
+**Version 5.3.0 | December 2025**
