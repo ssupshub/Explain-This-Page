@@ -1,5 +1,24 @@
 # 📋 Changelog
 
+## v5.3.0 - The "Modern Era" Refactor 🚀
+
+_Release Date: December 2025_
+
+### 🛠️ Technical Transformation
+
+- **Full React/TypeScript Migration**: Rewrote the entire extension using React 18 and TypeScript for industry-standard stability and performance.
+- **Vite Build System**: Implemented Vite for modern bundling, faster development, and optimized assets.
+- **Robust Messaging**: Added auto-injection logic to handle "receiving end does not exist" errors automatically.
+- **Stable Viewer Page**: Migrated from temporary Blob URLs to a permanent `viewer.html` extension page.
+
+### ✨ Visual & UI Enhancements
+
+- **Refined Glassmorphism**: Polished the design system with consistent Tailwind-based components.
+- **Animated Stats**: Dynamic cards for pages simplified and words processed.
+- **Interactive Jargon**: Hover tooltips for technical terms with a new design.
+
+---
+
 ## v5.2.0 - The "Beautiful" Update 🎨
 
 _Release Date: December 2025_
