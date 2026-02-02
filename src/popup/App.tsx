@@ -1,6 +1,76 @@
+import { useEffect, useState } from "react";
+import { GlassCard } from "../components/GlassCard";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { Sparkles, FileText, Zap, ChevronRight } from "lucide-react";
 
-// ... existing imports ...
+export default function App() {
+  const [stats, setStats] = useState({ pages: 0, words: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof chrome !== "undefined" && chrome.storage) {
+      chrome.storage.local.get(["stats"], (result) => {
+        if (result.stats) setStats(result.stats);
+      });
+    }
+  }, []);
+
+  const handleSimplify = async () => {
+    setLoading(true);
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      try {
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tab.id) {
+          const sendMessage = async () => {
+            return await chrome.tabs.sendMessage(tab.id!, {
+              action: "simplify",
+            });
+          };
+
+          try {
+            await sendMessage();
+            window.close();
+          } catch (err) {
+            // If message fails, try injecting the script dynamically
+            console.log("Script not ready, injecting...", err);
+            await chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              files: ["content.js"],
+            });
+
+            // Wait a moment for script to initialize
+            setTimeout(async () => {
+              try {
+                await sendMessage();
+                window.close();
+              } catch (e) {
+                setLoading(false);
+                alert(
+                  "Could not connect. Please refresh the page and try again.",
+                );
+              }
+            }, 500);
+          }
+        }
+      } catch (e) {
+        setLoading(false);
+        alert("Unexpected error: " + (e as Error).message);
+      }
+    } else {
+      // Dev mode simulation
+      setTimeout(() => setLoading(false), 2000);
+    }
+  };
+
+  return (
+    <div className="w-[380px] p-6 text-main min-h-[400px] flex flex-col items-center">
+      {/* Ambient Back Glow - Central Bottom Glow */}
+      <div className="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 w-[300px] h-[300px] bg-primary/30 rounded-full blur-[80px] pointer-events-none fade-in" />
+      <div className="fixed top-[-100px] left-1/2 transform -translate-x-1/2 w-[200px] h-[200px] bg-secondary/10 rounded-full blur-[60px] pointer-events-none" />
 
       <header className="flex w-full justify-between items-center mb-8 relative z-10">
         <div className="flex items-center">
@@ -28,10 +98,12 @@ import { ThemeToggle } from "../components/ThemeToggle";
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-1 text-main group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-secondary transition-all">
+              <h2 className="text-2xl font-bold mb-1 text-main group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r from-primary to-secondary transition-all">
                 Simplify
               </h2>
-              <p className="text-xs text-muted group-hover:text-main transition-colors">Generate summary & stats</p>
+              <p className="text-xs text-muted group-hover:text-main transition-colors">
+                Generate summary & stats
+              </p>
             </div>
             <div
               className={`p-4 rounded-full bg-white/10 group-hover:bg-primary/20 transition-all ${
@@ -77,7 +149,10 @@ import { ThemeToggle } from "../components/ThemeToggle";
           delay={0.3}
         >
           <div className="mt-1 p-1.5 rounded bg-accent/20">
-            <FileText size={14} className="text-accent-foreground text-primary" />
+            <FileText
+              size={14}
+              className="text-accent-foreground text-primary"
+            />
           </div>
           <div className="flex-1">
             <p className="text-xs font-bold text-main mb-1">Quick Tip</p>
