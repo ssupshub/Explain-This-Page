@@ -18,6 +18,8 @@ export default {
         "brand-dark": "#0f0c29",
         "brand-purple": "#302b63",
         "brand-blue": "#24243e",
+        main: "var(--text-main)",
+        muted: "var(--text-muted)",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

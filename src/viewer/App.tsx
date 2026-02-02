@@ -164,7 +164,7 @@ export default function App() {
         delay={0.5}
       >
         <div
-          className="prose dark:prose-invert prose-lg max-w-none text-main/90 [&>p]:mb-6 [&>p]:leading-loose"
+          className="prose dark:prose-invert prose-lg max-w-none text-main [&>p]:mb-6 [&>p]:leading-loose [&>h1]:text-main [&>h2]:text-main [&>h3]:text-main [&>li]:text-main [&>strong]:text-main"
           dangerouslySetInnerHTML={{ __html: result.text }}
         />
       </GlassCard>
