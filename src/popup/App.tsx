@@ -49,7 +49,7 @@ export default function App() {
               } catch (e) {
                 setLoading(false);
                 alert(
-                  "Could not connect. Please refresh the page and try again."
+                  "Could not connect. Please refresh the page and try again.",
                 );
               }
             }, 500);
@@ -67,9 +67,9 @@ export default function App() {
 
   return (
     <div className="w-[380px] p-6 text-white min-h-[400px] flex flex-col items-center">
-      {/* Ambient Back Glow */}
-      <div className="fixed top-[-50px] left-[-50px] w-32 h-32 bg-primary/40 rounded-full blur-[60px] pointer-events-none" />
-      <div className="fixed bottom-[-50px] right-[-50px] w-32 h-32 bg-secondary/40 rounded-full blur-[60px] pointer-events-none" />
+      {/* Ambient Back Glow - Central Bottom Glow */}
+      <div className="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 w-[300px] h-[300px] bg-primary/30 rounded-full blur-[80px] pointer-events-none fade-in" />
+      <div className="fixed top-[-100px] left-1/2 transform -translate-x-1/2 w-[200px] h-[200px] bg-secondary/10 rounded-full blur-[60px] pointer-events-none" />
 
       <header className="flex w-full justify-start items-center mb-8 relative z-10">
         <div className="p-3 glass-button rounded-xl mr-4 shadow-lg shadow-primary/20">
@@ -94,10 +94,12 @@ export default function App() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-1 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-secondary transition-all">
+              <h2 className="text-2xl font-bold mb-1 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-accent transition-all">
                 Simplify
               </h2>
-              <p className="text-xs text-white/60">Generate summary & stats</p>
+              <p className="text-xs text-white/60 group-hover:text-white/80 transition-colors">
+                Generate summary & stats
+              </p>
             </div>
             <div
               className={`p-4 rounded-full bg-white/10 group-hover:bg-primary/20 transition-all ${

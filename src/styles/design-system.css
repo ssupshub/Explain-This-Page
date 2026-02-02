@@ -3,24 +3,32 @@
 @tailwind utilities;
 
 :root {
-  /* Colors */
-  --primary: #8b5cf6;
-  --primary-hover: #7c3aed;
-  --secondary: #06b6d4;
-  --accent: #f472b6;
+  /* Colors - Reflect Inspired */
+  --primary: #a855f7; /* Vivid Purple */
+  --primary-hover: #9333ea;
+  --secondary: #60a5fa; /* Blue-ish */
+  --accent: #fae8ff; /* Light purple tint */
+
+  --bg-main: #06060f; /* Deep Dark */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
 
   /* Gradients */
-  --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  --glass-gradient: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --bg-gradient:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(120, 50, 255, 0.15),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(50, 100, 255, 0.05),
+      transparent 50%
+    );
 
   /* Typography */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -32,13 +40,15 @@
   /* Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 }
 
 body {
   font-family: var(--font-sans);
-  background: var(--bg-gradient);
+  background-color: var(--bg-main);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
   color: white;
   margin: 0;
   min-height: 100vh;

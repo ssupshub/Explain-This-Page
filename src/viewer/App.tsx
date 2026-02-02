@@ -39,8 +39,8 @@ export default function App() {
       });
       setResult(
         processContent(
-          "This is a demonstration of the simplification process. It utilizes algorithms to elucidate complex terminology."
-        )
+          "This is a demonstration of the simplification process. It utilizes algorithms to elucidate complex terminology.",
+        ),
       );
       setLoading(false);
     }
@@ -81,19 +81,18 @@ export default function App() {
       className="min-h-screen p-8 max-w-5xl mx-auto pb-20"
       onMouseOver={handleMouseOver}
     >
-      {/* Background */}
-      <div className="fixed top-[20%] right-[10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[128px] pointer-events-none -z-10" />
+      {/* Background - handled by global CSS, removing manual blob for cleaner look */}
 
       {activeTooltip && (
         <div
-          className="fixed z-[100] px-4 py-3 bg-gray-900/95 backdrop-blur text-white text-sm rounded-lg shadow-2xl -translate-x-1/2 -translate-y-[calc(100%+10px)] max-w-xs border border-white/10"
+          className="glass-panel fixed z-[100] px-4 py-3 text-white text-sm rounded-lg shadow-2xl -translate-x-1/2 -translate-y-[calc(100%+10px)] max-w-xs"
           style={{ left: activeTooltip.x, top: activeTooltip.y }}
         >
           <div className="font-semibold text-accent mb-1 text-xs uppercase tracking-wide">
             Definition
           </div>
           {activeTooltip.text}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-3 h-3 bg-gray-900/95 rotate-45 border-r border-b border-white/10"></div>
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-3 h-3 bg-gray-900/50 backdrop-blur rotate-45 border-r border-b border-white/10"></div>
         </div>
       )}
 
@@ -116,7 +115,7 @@ export default function App() {
             title="Copy Text"
             onClick={() =>
               navigator.clipboard.writeText(
-                document.querySelector(".prose")?.textContent || ""
+                document.querySelector(".prose")?.textContent || "",
               )
             }
           >
@@ -173,11 +172,11 @@ export default function App() {
 
 const StatBox = ({ label, value, sub, delay, icon }: any) => (
   <GlassCard
-    className="text-center py-6 px-4 flex flex-col items-center justify-center bg-white/5 border-white/10"
+    className="text-center py-6 px-4 flex flex-col items-center justify-center bg-white/5 border-white/10 hover:border-primary/30 transition-colors duration-300"
     delay={delay}
   >
     {icon && <div className="mb-2 opacity-80">{icon}</div>}
-    <div className="text-3xl font-bold text-white mb-1 tracking-tight">
+    <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-1 tracking-tight">
       {value}
     </div>
     <div className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">
