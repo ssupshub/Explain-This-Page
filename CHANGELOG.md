@@ -1,5 +1,21 @@
 # 📋 Changelog
 
+## v5.4.0 - Light Mode & Contrast ✨
+
+_Release Date: Feb 2026_
+
+### ✨ New Features
+
+- **Light Mode Support**: Added a fully supported light theme with optimized color palettes.
+- **Theme Toggle**: Integrated a simple sun/moon switch in the header.
+- **Adaptive Typography**: Text colors now dynamically switch between `text-main` (Dark Navy) and `text-white` for optimal contrast.
+
+### 🛠️ Fixes
+
+- **Contrast Issues**: Fixed a bug where text remained white in light mode by removing hardcoded legacy classes.
+
+---
+
 ## v5.3.0 - The "Modern Era" Refactor 🚀
 
 _Release Date: December 2025_

@@ -38,7 +38,7 @@ export function processContent(text: string): SimplifyResult {
       // Use a special marker we can parse in React, or just HTML
       simplified = simplified.replace(
         regex,
-        `<span class="jargon-term text-accent border-b border-accent/30 cursor-help transition-colors hover:bg-accent/10 relative group" data-tip="${definition}">$1</span>`
+        `<span class="jargon-term text-primary font-medium border-b border-primary/30 cursor-help transition-colors hover:bg-primary/10 relative group" data-tip="${definition}">$1</span>`,
       );
     }
   });
@@ -51,9 +51,7 @@ export function processContent(text: string): SimplifyResult {
     .split("\n\n")
     .filter((p) => p.trim().length > 0);
   const formattedHTML = paragraphs
-    .map(
-      (p) => `<p class="mb-6 text-lg leading-relaxed text-gray-200">${p}</p>`
-    )
+    .map((p) => `<p class="mb-6 text-lg leading-relaxed">${p}</p>`)
     .join("");
 
   return {

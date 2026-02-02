@@ -45,9 +45,12 @@ _Best for: Specific paragraphs or confusing sentences._
 
 ## 🎨 Step 3: Exploring the Interface
 
-### 💎 Glassmorphism UI
+### 💎 Glassmorphism UI (Light & Dark)
 
-The new interface uses modern design principles with frosted glass effects and smooth transitions.
+The new interface uses modern design principles with frosted glass effects. You can now toggle between:
+
+- **Dark Mode**: Deep space background with glowing accents (default).
+- **Light Mode**: Clean, bright interface with high-contrast text.
 
 ### 📊 Statistics
 
@@ -88,4 +91,4 @@ A: Ensure you have run `npm run build` and loaded the `dist` folder, not the roo
 ---
 
 _Enjoy your simplified reading experience!_
-**Version 5.3.0 | December 2025**
+**Version 5.4.0 | Feb 2026**

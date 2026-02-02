@@ -1,8 +1,14 @@
 # 🎯 Version 5 Series Improvements
 
-This document outlines the major evolution from v4 to the v5.x series, culminating in the massive v5.3 Refactor.
+This document outlines the major evolution from v4 to the v5.x series, culminating in the **v5.4 Light Mode Update**.
 
-## 🌟 v5.3: The "Modern Era" Refactor
+## 🌟 v5.4: The "Accessibility" Update
+
+_Latest Update (Feb 2026)_
+
+We listened to user feedback and introduced **Light Mode** for better readability in bright environments, while maintaining the signature premium look.
+
+## 🚀 v5.3: The "Modern Era" Refactor
 
 _Latest Update (December 2025)_
 

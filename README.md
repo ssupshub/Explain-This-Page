@@ -1,23 +1,19 @@
-# 🧠 Explain This Page - v5.3
+# 🧠 Explain This Page - v5.4 (Feb 2026)
 
 A powerful Chrome extension that uses **Advanced Logic** to transform complex webpages into easy-to-understand content. Real simplification, not just word replacement!
 
-![Version](https://img.shields.io/badge/version-5.3.0-blueviolet)
+![Version](https://img.shields.io/badge/version-5.4.0-blueviolet)
 ![Stack](https://img.shields.io/badge/stack-React_TS_Vite-blue)
 ![Theme](https://img.shields.io/badge/theme-Glassmorphism-cyan)
 
-## ✨ What's New in v5.3 (Refactor)
+## ✨ What's New in v5.4 (Feb 2026 Update)
 
-### 🛠️ **Modern Tech Stack**
+### 🌓 **Light & Dark Mode**
 
-We have completely rewritten the extension using a modern, robust architecture:
+- **Theme Toggle**: Switch instantly between the classic deep dark glassmorphism and the new **Light Mode**.
+- **Adaptive Contrast**: Text colors automatically adjust (Navy for Light, White for Dark) to ensure perfect readability in any lighting condition.
 
-- **React 18**: For a responsive and dynamic UI.
-- **TypeScript**: Ensuring code reliability and type safety.
-- **Vite**: For lightning-fast builds and optimized assets.
-- **Tailwind CSS**: For a stunning, maintainable design system.
-
-### 🎨 **Visual Overhaul (Glassmorphism)**
+### 🎨 **Refined Glassmorphism**
 
 - **Premium Design**: A stunning interface featuring frosted glass, gradients, and subtle animations.
 - **Dedicated Viewer**: Replaced the old "blob URL" with a proper `viewer.html` for a stable reading experience.
@@ -93,4 +89,4 @@ We have completely rewritten the extension using a modern, robust architecture:
 
 ---
 
-**Version 5.3.0 | December 2025**
+**Version 5.4.0 | Feb 2026**
