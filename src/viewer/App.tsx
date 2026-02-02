@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { processContent } from "../utils/processor";
 import { GlassCard } from "../components/GlassCard";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { BookOpen, Copy, Download, ExternalLink } from "lucide-react";
 
 export default function App() {
@@ -85,14 +86,14 @@ export default function App() {
 
       {activeTooltip && (
         <div
-          className="glass-panel fixed z-[100] px-4 py-3 text-white text-sm rounded-lg shadow-2xl -translate-x-1/2 -translate-y-[calc(100%+10px)] max-w-xs"
+          className="glass-panel fixed z-[100] px-4 py-3 text-main text-sm rounded-lg shadow-2xl -translate-x-1/2 -translate-y-[calc(100%+10px)] max-w-xs"
           style={{ left: activeTooltip.x, top: activeTooltip.y }}
         >
-          <div className="font-semibold text-accent mb-1 text-xs uppercase tracking-wide">
+          <div className="font-semibold text-primary mb-1 text-xs uppercase tracking-wide">
             Definition
           </div>
           {activeTooltip.text}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-3 h-3 bg-gray-900/50 backdrop-blur rotate-45 border-r border-b border-white/10"></div>
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-3 h-3 bg-glass-bg backdrop-blur rotate-45 border-r border-b border-glass-border"></div>
         </div>
       )}
 
@@ -101,17 +102,18 @@ export default function App() {
           <a
             href={data.originalUrl}
             target="_blank"
-            className="inline-flex items-center gap-2 text-white/40 hover:text-primary transition-colors mb-4 text-sm font-medium"
+            className="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors mb-4 text-sm font-medium"
           >
             <ExternalLink size={14} /> View Original Page
           </a>
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 leading-tight max-w-3xl">
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-2 leading-tight max-w-3xl">
             {data.title}
           </h1>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          <ThemeToggle />
           <button
-            className="glass-button p-3 rounded-xl text-white/80 hover:text-white"
+            className="glass-button p-3 rounded-xl text-muted hover:text-main"
             title="Copy Text"
             onClick={() =>
               navigator.clipboard.writeText(
@@ -122,7 +124,7 @@ export default function App() {
             <Copy size={20} />
           </button>
           <button
-            className="glass-button p-3 rounded-xl text-white/80 hover:text-white"
+            className="glass-button p-3 rounded-xl text-muted hover:text-main"
             title="Print / save as PDF"
             onClick={() => window.print()}
           >
@@ -162,7 +164,7 @@ export default function App() {
         delay={0.5}
       >
         <div
-          className="prose prose-invert prose-lg max-w-none text-gray-300 [&>p]:mb-6 [&>p]:leading-loose"
+          className="prose dark:prose-invert prose-lg max-w-none text-main/90 [&>p]:mb-6 [&>p]:leading-loose"
           dangerouslySetInnerHTML={{ __html: result.text }}
         />
       </GlassCard>
@@ -179,7 +181,7 @@ const StatBox = ({ label, value, sub, delay, icon }: any) => (
     <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary mb-1 tracking-tight">
       {value}
     </div>
-    <div className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">
+    <div className="text-[10px] uppercase tracking-widest text-muted font-semibold">
       {label} {sub && <span className="opacity-50"> {sub}</span>}
     </div>
   </GlassCard>
